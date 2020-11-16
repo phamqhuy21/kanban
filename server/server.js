@@ -4,6 +4,8 @@ const cors = require("cors");
 
 const app = express();
 
+const dbConfig = require("./src/config/db.config");
+
 var corsOptions = {
   origin: "http://localhost:8081",
 };
@@ -36,6 +38,9 @@ db.mongoose
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to my application" });
 });
+
+require("./src/routes/auth.routes")(app);
+require("./src/routes/user.routes")(app);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
