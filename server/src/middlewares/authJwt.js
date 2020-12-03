@@ -3,6 +3,7 @@ const config = require("../config/auth.config");
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
+const Board = db.board;
 
 verifyToken = (req, res, next) => {
   let token = req.headers["x-access-token"];
@@ -13,7 +14,7 @@ verifyToken = (req, res, next) => {
 
   jwt.verify(token, config.secret, (err, decoded) => {
     if (err) {
-      return res.status(401).send({ message: "Unauthorized!" });
+      return res.status(401).send({ message: "unauthenticated!" });
     }
     req.userId = decoded.id;
     next();
@@ -80,10 +81,37 @@ isModerator = (req, res, next) => {
   });
 };
 
+isMemberBoard = (req, res, next) => {
+  Board.findById(req.params.id).exec((err, board) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+    User.find(
+      {
+        _id: { $in: board.member },
+      },
+      (err, users) => {
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
+        if (users) {
+          next();
+          return;
+        }
+        res.status(403).send({ message: "Unauthorized!" });
+        return;
+      }
+    );
+  });
+};
+
 const authJwt = {
   verifyToken,
   isAdmin,
   isModerator,
+  isMemberBoard,
 };
 
 module.exports = authJwt;
