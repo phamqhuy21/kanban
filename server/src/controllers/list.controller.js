@@ -1,25 +1,22 @@
 const db = require("../models");
 const Board = db.board;
-const User = db.user;
 const List = db.list;
 
 exports.createList = async (req, res) => {
+  const boardId = req.boardId;
   const list = await new List({
     createdById: req.userId,
     title: req.body.title,
-    card: [],
   });
   await list.save((err, list) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
     }
-    res.status(200).json({
-      code: 200,
-      message: "Add list success",
-    });
+    if (list) {
+      return;
+    }
   });
-  const boardId = req.body.boardId;
   await Board.findByIdAndUpdate(
     boardId,
     {
@@ -35,7 +32,11 @@ exports.createList = async (req, res) => {
           message: "Cannot update board",
         });
         return;
-      } else res.send({ message: "Board updated successfully" });
+      } else
+        res.status(200).json({
+          code: 200,
+          message: "Add list and update board successfully",
+        });
     })
     .catch((err) => {
       return res.status(500).send({ message: err });
