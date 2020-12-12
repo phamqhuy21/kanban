@@ -34,7 +34,6 @@ function* editCardSagas({ payload }) {
   yield put(editCartSuccess(newState));
 }
 
-
 export function* watchActionCard() {
   yield takeEvery(typeBoard.UPDATE_DATA_REQUEST, getUpdateDataSagas);
   yield takeEvery(typeBoard.ADD_CARD_REQUEST, addCardSagas);
