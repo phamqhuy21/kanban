@@ -7,7 +7,7 @@ exports.createBoard = (req, res) => {
     createdById: req.userId,
     adminId: req.userId,
     title: req.body.title,
-    member: [req.userId],
+    members: [req.userId],
   });
   board.save((err, board) => {
     if (err) {
@@ -60,8 +60,8 @@ exports.getDetailBoard = async (req, res) => {
     let admin = await User.findById(board.adminId).lean();
     let creater = await User.findById(board.createdById).lean();
     let member = [];
-    for (let i = 0; i < board.member.length; i++) {
-      let dataMember = await User.findById(board.member[i]);
+    for (let i = 0; i < board.members.length; i++) {
+      let dataMember = await User.findById(board.members[i]);
       member.push({
         username: dataMember.username,
         email: dataMember.email,
