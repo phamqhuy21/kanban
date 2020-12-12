@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { Button, Col, Row } from "antd";
+import { Button, Row } from "antd";
 import { useSelector } from "react-redux";
 import FormAddList from "./List/FormAddList";
 import { PlusOutlined } from "@ant-design/icons";
@@ -21,22 +21,9 @@ const style = {
     height: "12vh",
   },
   boardCoverStyle: {
-    height: "80vh",
+    height: "100vh",
   },
 };
-
-const getWinStyle = (isDraggingOver, colorStatus) => ({
-  width: "95%",
-  height: "8vh",
-  margin: "1vw",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  border: "dashed #9e9e9e",
-  fontWeight: "bold",
-  color: colorStatus,
-  backgroundColor: isDraggingOver ? colorStatus : "",
-});
 
 const getDropStyle = () => {
   return {
@@ -108,60 +95,6 @@ function Board(props) {
             );
           }}
         </Droppable>
-      </Row>
-      <Row style={style.statusCoverStyle} id="statusCard">
-        <Col span={6}>
-          <Droppable droppableId="win">
-            {(provided, snapshot) => (
-              <div
-                ref={provided.innerRef}
-                style={getWinStyle(snapshot.isDraggingOver, "#43A047")}
-              >
-                WIN
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </Col>
-        <Col span={6}>
-          <Droppable droppableId="lose">
-            {(provided, snapshot) => (
-              <div
-                ref={provided.innerRef}
-                style={getWinStyle(snapshot.isDraggingOver, "#E53935")}
-              >
-                LOSE
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </Col>
-        <Col span={6}>
-          <Droppable droppableId="move_to">
-            {(provided, snapshot) => (
-              <div
-                ref={provided.innerRef}
-                style={getWinStyle(snapshot.isDraggingOver, "#999999")}
-              >
-                MOVE TO
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </Col>
-        <Col span={6}>
-          <Droppable droppableId="delete">
-            {(provided, snapshot) => (
-              <div
-                ref={provided.innerRef}
-                style={getWinStyle(snapshot.isDraggingOver, "#999999")}
-              >
-                DELETE
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </Col>
       </Row>
     </DragDropContext>
   );
