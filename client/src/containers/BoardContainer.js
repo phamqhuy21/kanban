@@ -57,7 +57,6 @@ function BoardContainer(props) {
 
   const onDragEnd = (result, data) => {
     const { destination, source, reason } = result;
-    document.getElementById("statusCard").style.visibility = "hidden";
     if (!destination || reason === "CANCEL") {
       return;
     }
@@ -70,22 +69,6 @@ function BoardContainer(props) {
     }
 
     switch (destination.droppableId) {
-      case "win": {
-        handleStatusCard(source, addWinStatusRequest);
-        break;
-      }
-      case "lose": {
-        handleStatusCard(source, addLoseStatusRequest);
-        break;
-      }
-      case "move_to": {
-        handleStatusCard(source, addMoveStatusRequest);
-        break;
-      }
-      case "delete": {
-        handleStatusCard(source, addDeleteStatusRequest);
-        break;
-      }
       case "board": {
         const res = reorder(data, source.index, destination.index);
         dispatch(updateDataRequest(res));
@@ -103,9 +86,9 @@ function BoardContainer(props) {
     }
   };
 
-  const onDragStart = () => {
-    document.getElementById("statusCard").style.visibility = "visible";
-  };
+  //   const onDragStart = () => {
+  //     document.getElementById("statusCard").style.visibility = "visible";
+  //   };
 
   const renderBoard = (dataBoard) => {
     if (dataBoard) {
@@ -143,7 +126,6 @@ function BoardContainer(props) {
     <React.Fragment>
       <Board
         onDragEnd={onDragEnd}
-        onDragStart={onDragStart}
         renderBoard={renderBoard}
         handleAddList={handleAddList}
       />
