@@ -82,28 +82,26 @@ isModerator = (req, res, next) => {
 };
 
 isMemberBoard = (req, res, next) => {
-  Board.findById(req.params.id).exec((err, board) => {
+  let boardId = req.params.id || req.query.boardId;
+  let userId = req.userId;
+  Board.findById(boardId).exec((err, board) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
     }
-    User.find(
-      {
-        _id: { $in: board.member },
-      },
-      (err, users) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
-        if (users) {
-          next();
-          return;
-        }
+    if (board) {
+      let filter = board.members.filter((member) => member === userId);
+      if (filter.length > 0) {
+        req.boardId = boardId;
+        next();
+        return;
+      } else {
         res.status(403).send({ message: "Unauthorized!" });
         return;
       }
-    );
+    } else {
+      res.status(404).json({ code: 404, message: "Can not find board" });
+    }
   });
 };
 
