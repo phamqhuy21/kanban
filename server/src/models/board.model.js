@@ -4,7 +4,7 @@ const Board = mongoose.model(
   "Board",
   new mongoose.Schema(
     {
-      member: [],
+      members: [],
       adminId: String,
       createdById: String,
       title: String,
