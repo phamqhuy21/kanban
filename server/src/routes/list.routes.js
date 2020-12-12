@@ -1,4 +1,4 @@
-const { authJwt, verifyUser } = require("../middlewares");
+const { authJwt } = require("../middlewares");
 const controller = require("../controllers/list.controller");
 
 module.exports = (app) => {
@@ -10,5 +10,9 @@ module.exports = (app) => {
     next();
   });
 
-  app.post("/api/v1/list/create", [authJwt.verifyToken], controller.createList);
+  app.post(
+    "/api/v1/list/create",
+    [authJwt.verifyToken, authJwt.isMemberBoard],
+    controller.createList
+  );
 };
