@@ -7,7 +7,6 @@ import {
 import * as typeBoard from "../../const/board";
 import { cloneDeep } from "lodash";
 
-
 function* addListSagas({ payload }) {
   const { status } = payload;
   yield put(addListSuccess(status));
@@ -33,5 +32,4 @@ export function* watchActionList() {
   yield takeEvery(typeBoard.ADD_LIST_REQUEST, addListSagas);
   yield takeEvery(typeBoard.DELETE_LIST_REQUEST, deleteListSagas);
   yield takeEvery(typeBoard.EDIT_LIST_REQUEST, editListSagas);
-
 }
