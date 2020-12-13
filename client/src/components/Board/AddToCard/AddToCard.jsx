@@ -13,6 +13,7 @@ import UploadImageForm from "./UploadImageForm";
 import UploadFileForm from "./UploadFileForm";
 import ExpirationDateForm from "./ExpirationDateForm";
 import MemberForm from "./MemberForm";
+import ManageLabel from "../../../containers/DetailCard/ManageLabel";
 
 AddToCard.propTypes = {
   card: PropTypes.object,
@@ -25,11 +26,14 @@ AddToCard.propTypes = {
   handleDeleteGround: PropTypes.func,
 };
 
-const styleButton = {
-  display: "flex",
-  justifyContent: "flex-start",
-  width: "90%",
-  marginBottom: "1vh",
+const style = {
+  styleButton: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: "90%",
+    marginBottom: "1vh",
+  },
 };
 
 function AddToCard(props) {
@@ -51,16 +55,17 @@ function AddToCard(props) {
           overlay={<MemberForm card={card} handleAddMember={handleAddMember} />}
           trigger="click"
         >
-          <Button style={styleButton}>
+          <Button style={style.styleButton}>
             <UserOutlined />
             Thành viên
           </Button>
         </Dropdown>
         <Dropdown
-          overlay={<LabelForm card={card} selectLabel={selectLabel} />}
+          overlay={<ManageLabel card={card} selectLabel={selectLabel} />}
           trigger="click"
+          placement="bottomRight"
         >
-          <Button style={styleButton}>
+          <Button style={style.styleButton}>
             <TagOutlined />
             Nhãn
           </Button>
@@ -75,7 +80,7 @@ function AddToCard(props) {
           }
           trigger="click"
         >
-          <Button style={styleButton}>
+          <Button style={style.styleButton}>
             <FieldTimeOutlined /> Ngày hết hạn
           </Button>
         </Dropdown>
@@ -85,7 +90,7 @@ function AddToCard(props) {
           }
           trigger="click"
         >
-          <Button style={styleButton}>
+          <Button style={style.styleButton}>
             <PaperClipOutlined />
             Đính kèm
           </Button>
@@ -100,7 +105,7 @@ function AddToCard(props) {
           }
           trigger="click"
         >
-          <Button style={styleButton}>
+          <Button style={style.styleButton}>
             <PictureOutlined />
             Ảnh bìa
           </Button>
