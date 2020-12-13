@@ -18,6 +18,7 @@ import { useEffect } from "react";
 const styleButton = {
   display: "flex",
   justifyContent: "flex-start",
+  alignItems: "center",
   width: "90%",
   marginBottom: "1vh",
 };
