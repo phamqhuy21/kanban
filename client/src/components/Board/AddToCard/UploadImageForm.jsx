@@ -26,6 +26,7 @@ function UploadImageForm(props) {
   return (
     <div style={{ overflow: "auto" }}>
       <Card
+        size="small"
         title={<div style={{ textAlign: "center" }}>Ảnh bìa</div>}
         bordered={false}
         bodyStyle={{ padding: "0", width: "20vw", height: "30vh" }}
