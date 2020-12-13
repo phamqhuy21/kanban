@@ -23,6 +23,15 @@ const style = {
   boardCoverStyle: {
     height: "100vh",
   },
+  coverAddList: {
+    flex: "0 0 auto",
+    width: "20%",
+    margin: "1vh",
+    backgroundColor: "none",
+    fontWeight: "bold",
+    fontFamily:
+      "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif",
+  },
 };
 
 const getDropStyle = () => {
@@ -62,17 +71,7 @@ function Board(props) {
                 >
                   {renderBoard(data)}
                   {provided.placeholder}
-                  <div
-                    style={{
-                      flex: "0 0 auto",
-                      width: "20%",
-                      margin: "1vh",
-                      backgroundColor: "none",
-                      fontWeight: "bold",
-                      fontFamily:
-                        "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif",
-                    }}
-                  >
+                  <div style={style.coverAddList}>
                     {visibleAddList ? (
                       <FormAddList
                         setVisible={setVisibleAddList}
@@ -85,7 +84,6 @@ function Board(props) {
                           setVisibleAddList(true);
                         }}
                       >
-                        <div></div>
                         <PlusOutlined /> Thêm danh sách khác
                       </Button>
                     )}
