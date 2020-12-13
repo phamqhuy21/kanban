@@ -29,10 +29,11 @@ function UploadFileForm(props) {
 
   return (
     <Card
+      size="small"
       title={<div>Đính kèm</div>}
       bordered={false}
-      bodyStyle={{ padding: "0" }}
-      headStyle={{ padding: "0" }}
+      //   bodyStyle={{ padding: "0" }}
+      //   headStyle={{ padding: "0" }}
     >
       <Upload
         {...PROP}
