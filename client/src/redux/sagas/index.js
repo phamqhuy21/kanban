@@ -3,6 +3,8 @@ import { watchActionDetailCard } from "./detailCard";
 import { watchActionList } from "./list";
 import { watchActionCard } from "./card";
 import { watchActionStatusCard } from "./statusCard";
+import { watchActionBoards } from "./boards";
+import { watchActionUser } from "./user";
 
 export default function* rootSaga() {
   yield all([
@@ -10,5 +12,7 @@ export default function* rootSaga() {
     watchActionList(),
     watchActionCard(),
     watchActionStatusCard(),
+    watchActionBoards(),
+    watchActionUser(),
   ]);
 }

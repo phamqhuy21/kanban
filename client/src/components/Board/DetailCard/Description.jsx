@@ -1,15 +1,11 @@
-import React, { useState } from "react";
-import { Card, Row, Col, Form, Input, Button } from "antd";
+import React from "react";
+import { Form, Input, Button } from "antd";
 import PropTypes from "prop-types";
-import { AlignLeftOutlined, CloseOutlined } from "@ant-design/icons";
-import { useDispatch } from "react-redux";
-import { addDescriptionRequest } from "../../../redux/actions/board";
+import { CloseOutlined } from "@ant-design/icons";
 
 Description.propTypes = {
-  card: PropTypes.shape({
-    id: PropTypes.string,
-    description: PropTypes.string,
-  }),
+  handleSave: PropTypes.func,
+  handleCloseForm: PropTypes.func,
 };
 
 const style = {
@@ -30,69 +26,20 @@ const style = {
 };
 
 function Description(props) {
-  const { card } = props;
-  const [openForm, setOpenForm] = useState(false);
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
-
-  const handleSave = () => {
-    form.validateFields().then((value) => {
-      dispatch(addDescriptionRequest(card.id, value.description));
-    });
-    setOpenForm(false);
-  };
+  const { handleSave, handleCloseForm } = props;
 
   return (
-    <Card
-      title={
-        <Row>
-          <Col span={2}>
-            <AlignLeftOutlined />
-          </Col>
-          <Col span={22}>
-            <span>Mô tả</span>
-          </Col>
-        </Row>
-      }
-      style={style.cardStyle}
-      headStyle={style.headCardStyle}
-      bordered={false}
-    >
-      <Row>
-        <Col offset={2} span={22}>
-          {openForm ? (
-            <Form form={form}>
-              <Form.Item name="description">
-                <Input.TextArea
-                  rows={5}
-                  placeholder="Thêm mô tả chi tiết hơn ..."
-                />
-              </Form.Item>
-              <Form.Item>
-                <Button style={style.buttonSaveStyle} onClick={handleSave}>
-                  Lưu
-                </Button>
-                <CloseOutlined
-                  onClick={() => setOpenForm(false)}
-                  style={style.iconCloseStyle}
-                />
-              </Form.Item>
-            </Form>
-          ) : (
-            <div
-              className="add-description"
-              onClick={() => {
-                setOpenForm(true);
-              }}
-            >
-              {card.description === ""
-                ? "Thêm mô tả chi tiết hơn ..."
-                : card.description}
-            </div>
-          )}
-        </Col>
-      </Row>
-    </Card>
+    <React.Fragment>
+      <Form.Item name="description">
+        <Input.TextArea rows={5} placeholder="Thêm mô tả chi tiết hơn ..." />
+      </Form.Item>
+      <Form.Item>
+        <Button style={style.buttonSaveStyle} onClick={handleSave}>
+          Lưu
+        </Button>
+        <CloseOutlined onClick={handleCloseForm} style={style.iconCloseStyle} />
+      </Form.Item>
+    </React.Fragment>
   );
 }
 

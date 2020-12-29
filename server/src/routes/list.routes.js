@@ -15,4 +15,6 @@ module.exports = (app) => {
     [authJwt.verifyToken, authJwt.isMemberBoard],
     controller.createList
   );
+
+  app.delete("/api/v1/list/:id", [authJwt.verifyToken], controller.deleteList);
 };

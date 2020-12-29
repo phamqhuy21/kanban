@@ -47,11 +47,10 @@ function LabelForm(props) {
             <p style={{ fontWeight: "500" }}>Nhãn</p>
             {label.map((color, index) => {
               return (
-                <Row style={{ marginBottom: "0.5vh" }}>
+                <Row style={{ marginBottom: "0.5vh" }} key={index}>
                   <Col span={22}>
                     <Card
                       size="small"
-                      key={index}
                       extra={
                         card.label.includes(color) ? (
                           <CheckOutlined style={{ color: "white" }} />

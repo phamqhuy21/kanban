@@ -13,14 +13,16 @@ const { Item } = Form;
 function SignIn(props) {
   return (
     <React.Fragment>
-      <Item>
-        <Input placeholder="Nhập email"></Input>
+      <Item name="username">
+        <Input placeholder="Nhập tên đăng nhập"></Input>
+      </Item>
+      <Item name="password">
+        <Input.Password placeholder="Nhập mật khẩu"></Input.Password>
       </Item>
       <Item>
-        <Input placeholder="Nhập mật khẩu"></Input>
-      </Item>
-      <Item>
-        <Button style={style.btnLoginStyle}>Đăng nhập</Button>
+        <Button style={style.btnLoginStyle} htmlType="submit">
+          Đăng nhập
+        </Button>
       </Item>
     </React.Fragment>
   );

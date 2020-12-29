@@ -24,8 +24,9 @@ function AddToCardContainer(props) {
   const dispatch = useDispatch();
 
   const handleAddMember = (mem, card) => {
+    console.log(card);
     if (
-      findIndex(card.member, function (member) {
+      findIndex(card.members, function (member) {
         return member.alias === mem.alias;
       }) !== -1
     ) {

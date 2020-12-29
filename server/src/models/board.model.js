@@ -8,6 +8,7 @@ const Board = mongoose.model(
       adminId: String,
       createdById: String,
       title: String,
+      backgroundColor: String,
       lists: [],
     },
     { timestamps: true }

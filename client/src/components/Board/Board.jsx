@@ -25,8 +25,8 @@ const style = {
   },
   coverAddList: {
     flex: "0 0 auto",
-    width: "20%",
-    margin: "1vh",
+    width: "300px",
+    margin: "5px",
     backgroundColor: "none",
     fontWeight: "bold",
     fontFamily:
@@ -47,7 +47,7 @@ const getDropStyle = () => {
 };
 
 function Board(props) {
-  const { onDragEnd, onDragStart, renderBoard, handleAddList } = props;
+  const { onDragEnd, renderBoard, handleAddList, detailBoardReducer } = props;
   const data = useSelector((state) => state.board);
   const [visibleAddList, setVisibleAddList] = useState(false);
 
@@ -56,7 +56,6 @@ function Board(props) {
       onDragEnd={(result) => {
         onDragEnd(result, data);
       }}
-      onDragStart={onDragStart}
     >
       <Row style={style.boardCoverStyle}>
         <Droppable droppableId="board" type="KANBAN" direction="horizontal">
@@ -69,7 +68,7 @@ function Board(props) {
                   {...provided.droppableProps}
                   style={getDropStyle()}
                 >
-                  {renderBoard(data)}
+                  {renderBoard(detailBoardReducer.lists)}
                   {provided.placeholder}
                   <div style={style.coverAddList}>
                     {visibleAddList ? (

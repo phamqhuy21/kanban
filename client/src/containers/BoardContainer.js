@@ -1,20 +1,19 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Board from "../components/Board/Board";
-import { addListRequest, updateDataRequest } from "../redux/actions/board";
-import {
-  addDeleteStatusRequest,
-  addLoseStatusRequest,
-  addMoveStatusRequest,
-  addWinStatusRequest,
-} from "../redux/actions/statusCard";
+import { updateDataRequest } from "../redux/actions/board";
 import { cloneDeep } from "lodash";
 import { Draggable } from "react-beautiful-dnd";
 import ListContainer from "./ListContainer";
+import { createList } from "../api/lists";
+import { useRouteMatch } from "react-router-dom";
+import { message } from "antd";
+import { getBoardDetailReq } from "../redux/actions/boards";
 
 function BoardContainer(props) {
-  const data = useSelector((state) => state.board);
+  const detailBoardReducer = useSelector((state) => state.detailBoardReducer);
   const dispatch = useDispatch();
+  const match = useRouteMatch();
 
   const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
@@ -35,14 +34,6 @@ function BoardContainer(props) {
       }
     });
     return kanbann;
-  };
-
-  const handleStatusCard = (source, addStatusRequest) => {
-    let dataBoard = cloneDeep(data);
-    let arrSource = dataBoard.filter((item) => item.id === source.droppableId);
-    let cardStatus = arrSource[0].task.splice(source.index, source.index + 1);
-    dispatch(addStatusRequest(cardStatus[0]));
-    dispatch(updateDataRequest(dataBoard));
   };
 
   const reorderDifferentList = (dataBoard, destination, source) => {
@@ -86,27 +77,19 @@ function BoardContainer(props) {
     }
   };
 
-  //   const onDragStart = () => {
-  //     document.getElementById("statusCard").style.visibility = "visible";
-  //   };
-
-  const renderBoard = (dataBoard) => {
-    if (dataBoard) {
-      return dataBoard.map((item, index) => {
-        if (item) {
+  const renderBoard = (lists) => {
+    if (lists.length > 0) {
+      return lists.map((list, index) => {
+        if (list) {
           return (
-            <Draggable
-              key={item.id}
-              draggableId={String(item.id)}
-              index={index}
-            >
+            <Draggable key={list._id} draggableId={list._id} index={index}>
               {(provided, snapshot) => {
                 return (
                   <ListContainer
                     innerRef={provided.innerRef}
                     provided={provided}
                     snapshot={snapshot}
-                    list={item}
+                    list={list}
                     index={index}
                   />
                 );
@@ -118,13 +101,25 @@ function BoardContainer(props) {
     }
   };
 
-  const handleAddList = (status) => {
-    dispatch(addListRequest(status));
+  const handleAddList = (title) => {
+    createList(match.params.id, { title: title })
+      .then((res) => {
+        if (res.status === 200) {
+          message.success("Tạo danh sách thành công");
+          dispatch(getBoardDetailReq(match.params.id));
+        } else message.error("Tạo danh sách thất bại");
+      })
+      .catch((err) => {
+        if (err.response) {
+          message.error(err.response.data.message);
+        } else message.error("Tạo danh sách thất bại");
+      });
   };
 
   return (
     <React.Fragment>
       <Board
+        detailBoardReducer={detailBoardReducer}
         onDragEnd={onDragEnd}
         renderBoard={renderBoard}
         handleAddList={handleAddList}

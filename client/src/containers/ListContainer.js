@@ -9,6 +9,10 @@ import {
   editCartRequest,
   editListRequest,
 } from "../redux/actions/board";
+import { deleteList } from "../api/lists";
+import { useRouteMatch } from "react-router-dom";
+import { message, Modal } from "antd";
+import { getBoardDetailReq } from "../redux/actions/boards";
 
 ListContainer.propTypes = {
   list: PropTypes.shape({
@@ -27,6 +31,7 @@ function ListContainer(props) {
   const [visiblePopover, setVisiblePopover] = useState(false);
   const [visibleFormEditList, setVisibleFormEdit] = useState(false);
   const [openForm, setOpenForm] = useState(false);
+  const match = useRouteMatch();
 
   const dispatch = useDispatch();
   const { dragHandleProps } = provided;
@@ -63,7 +68,31 @@ function ListContainer(props) {
   };
 
   const handleDeleteList = () => {
-    dispatch(deleteListRequest(index));
+    setVisiblePopover(false);
+    Modal.confirm({
+      title: `Xóa danh sách ${list.title} khỏi bảng`,
+      content: "Bạn có chắc chắn muốn xóa không ?",
+      okText: "Xóa",
+      okType: "danger",
+      cancelText: "Không",
+      onOk: async () => {
+        let boardId = match.params.id;
+        let listId = list._id;
+        deleteList(boardId, listId)
+          .then((res) => {
+            if (res.status === 200) {
+              message.success("Xóa danh sách thành công");
+              dispatch(getBoardDetailReq(boardId));
+            } else message.error("Xóa danh sách thất bại");
+          })
+          .catch((err) => {
+            message.error("Xóa danh sách thất bại");
+          });
+      },
+    });
+
+    //   deleteList();
+    //dispatch(deleteListRequest(index));
   };
 
   const openFormEditList = () => {

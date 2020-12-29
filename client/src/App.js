@@ -2,13 +2,10 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "antd/dist/antd.css";
 import routes from "./routes/routes";
-import GlobalMenuContainer from "./containers/GlobalMenu/GlobalMenuContainer";
 import { Layout } from "antd";
 
-const { Content } = Layout;
-
 const style = {
-  contentStyle: { background: "#fff" },
+  coverStyle: { height: "100vh" },
 };
 
 function App() {
@@ -30,12 +27,9 @@ function App() {
   };
 
   return (
-    <div style={{ height: "100vh" }}>
+    <div style={style.coverStyle}>
       <Layout>
-        <GlobalMenuContainer />
-        <Content style={style.contentStyle}>
-          <Router>{showBody(routes)}</Router>
-        </Content>
+        <Router>{showBody(routes)}</Router>
       </Layout>
     </div>
   );

@@ -8,6 +8,7 @@ import Label from "./Label";
 import ExpirationDate from "./ExpirationDate";
 import Comments from "./Comment";
 import AddToCardContainer from "../../../containers/AddToCardContainer";
+import DescriptionContainer from "../../../containers/DetailCard/DescriptionContainer";
 
 DetailCard.propTypes = {
   stateCard: PropTypes.shape({
@@ -45,16 +46,18 @@ function DetailCard(props) {
     handleCheckSuccess,
   } = props;
 
+  console.log(stateCard);
+
   return (
     <Modal
       className="modalCardDetail"
       title={
         <React.Fragment>
-          {stateCard.groundImage.length > 0 ? (
+          {/* {stateCard.groundImage.length > 0 ? (
             <div style={{ backgroundColor: "#bdbdbd", textAlign: "center" }}>
               <Image width={200} src={stateCard.groundImage} />
             </div>
-          ) : null}
+          ) : null} */}
           <h2
             style={{
               marginTop: "3vh",
@@ -64,7 +67,7 @@ function DetailCard(props) {
               paddingBottom: "2vh",
             }}
           >
-            {stateCard.content}
+            {stateCard.title}
           </h2>
         </React.Fragment>
       }
@@ -77,17 +80,17 @@ function DetailCard(props) {
       <Layout>
         <Content>
           <div style={style.coverItemStyle}>
-            {stateCard.label.length > 0 ? <Label card={stateCard} /> : null}
-            {Object.keys(stateCard.exDate).length > 0 ? (
+            {stateCard.labels.length > 0 ? <Label card={stateCard} /> : null}
+            {/* {Object.keys(stateCard.exDate).length > 0 ? (
               <ExpirationDate
                 card={stateCard}
                 handleCheckSuccess={handleCheckSuccess}
               />
-            ) : null}
+            ) : null} */}
           </div>
-          <Description card={stateCard} />
-          <Activity card={stateCard} user={user} />
-          <Comments user={user} addComment={addComment} card={stateCard} />
+          <DescriptionContainer card={stateCard} />
+          {/* <Activity card={stateCard} user={user} />
+          <Comments user={user} addComment={addComment} card={stateCard} /> */}
         </Content>
         <Sider style={style.siderStyle}>
           <AddToCardContainer card={stateCard} />

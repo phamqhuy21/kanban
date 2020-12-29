@@ -4,10 +4,13 @@ import { Card, Divider, Form } from "antd";
 import { Link, useRouteMatch } from "react-router-dom";
 import Lottie from "react-lottie-player";
 
-SignUnSignUp.propTypes = {};
+SignUnSignUp.propTypes = {
+  handleSignIn: PropTypes.func,
+  handleSignUp: PropTypes.func,
+};
 
 const style = {
-  coverStyle: { textAlign: "center" },
+  coverStyle: { textAlign: "center", background: "#fff" },
   coverCardStyle: { display: "flex", flex: "auto", justifyContent: "center" },
   bodyCard: { width: "350px", boxShadow: "5px 10px 5px 5px #888888" },
   coverLottieStyle: { position: "fixed", bottom: 0 },
@@ -17,24 +20,36 @@ const style = {
   },
 };
 
-const { Item } = Form;
-
 function SignUnSignUp(props) {
-  const { children } = props;
+  const { children, handleSignUp, handleSignIn } = props;
+  const [form] = Form.useForm();
   const match = useRouteMatch();
+  const { path } = match;
   return (
     <div style={style.coverStyle}>
       <h1>Trello</h1>
       <div style={style.coverCardStyle}>
         <Card bodyStyle={style.bodyCard}>
-          {match.params.action === "signIn" ? (
+          {path === "/signIn" ? (
             <p>Đăng nhập vào trello</p>
           ) : (
             <p>Đăng ký tài khoản của bạn</p>
           )}
-          <Form>{children}</Form>
+          <Form
+            form={form}
+            onFinish={(value) => {
+              if (path === "/signIn") {
+                handleSignIn(value);
+              }
+              if (path === "/signUp") {
+                handleSignUp(value);
+              }
+            }}
+          >
+            {children}
+          </Form>
           <Divider />
-          {match.params.action === "signIn" ? (
+          {path === "/signIn" ? (
             <Link to="/signUp">
               <p>Đăng ký tài khoản</p>
             </Link>

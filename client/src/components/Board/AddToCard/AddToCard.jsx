@@ -47,6 +47,9 @@ function AddToCard(props) {
     handlePreviewImg,
     handleDeleteGround,
   } = props;
+
+  console.log(card);
+
   return (
     <div>
       <h3>Thêm vào thẻ</h3>

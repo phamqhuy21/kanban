@@ -37,15 +37,18 @@ function Cards(props) {
     };
   }
 
+  console.log(card);
+
   return (
     <React.Fragment>
-      <Draggable key={card.id} draggableId={String(card.id)} index={index}>
+      <Draggable key={card._id} draggableId={card._id} index={index}>
         {(provided, snapshot) => {
           return (
             <div
-              style={
-                card.saved === true ? { display: "none" } : { width: "100%" }
-              }
+              //   style={
+              //     card.saved === true ? { display: "none" } : { width: "100%" }
+              //   }
+              style={{ width: "100%" }}
               ref={refCard}
             >
               <div
@@ -73,7 +76,7 @@ function Cards(props) {
                   hoverable={true}
                   title={
                     <div>
-                      {card.groundImage.length > 0 ? (
+                      {/* {card.groundImage.length > 0 ? (
                         <div
                           style={{
                             backgroundColor: "#bdbdbd",
@@ -81,13 +84,11 @@ function Cards(props) {
                           }}
                         >
                           <Image
-                            /* width={100}
-                            height={200} */
                             src={card.groundImage}
                           />
                         </div>
-                      ) : null}
-                      {card.label.length > 0 ? (
+                      ) : null} */}
+                      {card.labels.length > 0 ? (
                         <div style={{ display: "flex" }}>
                           {card.label.map((item, index) => {
                             return (
@@ -112,7 +113,7 @@ function Cards(props) {
                           setVisibleModalCard(true);
                         }}
                       >
-                        {card.content}
+                        {card.title}
                       </div>
                       {extra ? (
                         <div

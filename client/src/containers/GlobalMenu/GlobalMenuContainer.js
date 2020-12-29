@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Layout } from "antd";
 import GlobalMenu from "../../components/GlobalMenu/GlobalMenu";
+import { useRouteMatch } from "react-router-dom";
 
 GlobalMenuContainer.propTypes = {};
 
@@ -17,11 +18,15 @@ const style = {
 };
 
 function GlobalMenuContainer(props) {
+  const accessToken = localStorage.getItem("accessToken");
+
   return (
     <React.Fragment>
-      <Layout.Header style={style.headerStyle}>
-        <GlobalMenu />
-      </Layout.Header>
+      {accessToken ? (
+        <Layout.Header style={style.headerStyle}>
+          <GlobalMenu />
+        </Layout.Header>
+      ) : null}
     </React.Fragment>
   );
 }

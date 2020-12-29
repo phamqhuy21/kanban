@@ -48,8 +48,8 @@ const listStyle = {
 const getStyle = (isDragging, style) => ({
   ...style,
   flex: "0 0 auto",
-  width: "20%",
-  margin: "1vh",
+  width: "300px",
+  margin: "5px",
 
   backgroundColor: "none",
   fontWeight: "bold",
@@ -86,7 +86,7 @@ function Lists(props) {
       ref={innerRef}
       style={getStyle(snapshot.isDragging, provided.draggableProps.style)}
     >
-      <Droppable droppableId={`${list.id}`}>
+      <Droppable droppableId={`${list._id}`}>
         {(provided, snapshot) => {
           return (
             <div
@@ -97,7 +97,7 @@ function Lists(props) {
             >
               <List
                 style={listStyle}
-                title={list.status}
+                title={list.title}
                 header={
                   <List.Item
                     {...dragHandleProps}
@@ -126,14 +126,14 @@ function Lists(props) {
                       </Popover>
                     }
                   >
-                    {list.status}
+                    {list.title}
                   </List.Item>
                 }
-                dataSource={list.task}
-                renderItem={(item, index) => (
+                dataSource={list.cards || []}
+                renderItem={(card, index) => (
                   <List.Item style={{ padding: "0" }} key={index}>
                     <CardContainer
-                      card={item}
+                      card={card}
                       index={index}
                       handleDeleteCard={handleDeleteCard}
                       handleEditCard={handleEditCard}

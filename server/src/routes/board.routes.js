@@ -27,4 +27,6 @@ module.exports = (app) => {
     [authJwt.verifyToken, authJwt.isMemberBoard],
     controller.getDetailBoard
   );
+
+  app.get("/api/v1/boards", [authJwt.verifyToken], controller.getBoards);
 };

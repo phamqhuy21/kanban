@@ -5,6 +5,7 @@ import { CheckOutlined } from "@ant-design/icons";
 import Avatar from "antd/lib/avatar/avatar";
 import { findIndex } from "lodash";
 import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
 
 MemberForm.propTypes = {
   card: PropTypes.shape({
@@ -13,39 +14,28 @@ MemberForm.propTypes = {
   handleAddMember: PropTypes.func,
 };
 
-const MEMBER = [
-  {
-    alias: "PH",
-    name: "phạm quốc huy",
-  },
-  {
-    alias: "LN",
-    name: "lê trọng nghĩa",
-  },
-];
-
 function MemberForm(props) {
   const { card, handleAddMember } = props;
-  console.log(props);
-  const [member, setMember] = useState(MEMBER);
+  const detailBoardReducer = useSelector((state) => state.detailBoardReducer);
+  const [members, setMembers] = useState(detailBoardReducer.members);
 
   const handleSearch = (e) => {
-    let fil = MEMBER.filter((mem) => {
-      return mem.name.search(`${e.target.value}`) >= 0;
+    let fil = detailBoardReducer.members.filter((mem) => {
+      return mem.fullname.search(`${e.target.value}`) >= 0;
     });
-    setMember(fil);
+    setMembers(fil);
   };
 
   return (
     <Card title={<h3>Thành viên</h3>} size="small" bordered={false}>
       <Input
-        placeholder="input search text"
+        placeholder="Nhập tên thành viên ..."
         onChange={handleSearch}
         style={{ width: 200 }}
       />
       <div style={{ marginTop: "3vh" }}>
         <h4>Thành viên của bảng</h4>
-        {member.map((mem, index) => {
+        {members.map((mem, index) => {
           return (
             <p
               key={index}
@@ -60,15 +50,15 @@ function MemberForm(props) {
               }}
             >
               <Avatar style={{ marginRight: "1vw" }}>{mem.alias}</Avatar>
-              {mem.name}
-              {card.member.length > 0 &&
+              {mem.email}
+              {/* {card.member.length > 0 &&
               findIndex(card.member, function (o) {
                 return o.alias === mem.alias;
               }) !== -1 ? (
                 <CheckOutlined
                   style={{ position: "absolute", top: "1.7vh", right: "0.5vw" }}
                 />
-              ) : null}
+              ) : null} */}
             </p>
           );
         })}

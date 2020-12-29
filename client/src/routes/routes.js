@@ -2,6 +2,7 @@ import React from "react";
 import KanBan from "../containers/KanBan";
 import SignInSignUpContainer from "../containers/SignInSignUp/SignInSignUpContainer";
 import ManageBoardContainer from "../containers/ManageBoards/ManageBoardContainer";
+import NotFound from "../components/NotFound/NotFound";
 
 const routes = [
   {
@@ -10,15 +11,21 @@ const routes = [
     component: () => <KanBan />,
   },
   {
-    path: "/:username/boards",
+    path: "/boards",
     exact: true,
     component: () => <ManageBoardContainer />,
   },
   {
-    path: "/:action",
+    path: "/signIn",
     exact: true,
     component: () => <SignInSignUpContainer />,
   },
+  {
+    path: "/signUp",
+    exact: true,
+    component: () => <SignInSignUpContainer />,
+  },
+  { path: "*", component: () => <NotFound /> },
 ];
 
 export default routes;
