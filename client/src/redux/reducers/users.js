@@ -9,6 +9,10 @@ const reducer = (state = initialState, action) => {
       let newState = cloneDeep(action.payload.data);
       return newState;
     }
+    case userConstant.GET_USER_FAILED: {
+      let newState = cloneDeep(action.payload.error);
+      return newState;
+    }
     default:
       return state;
   }

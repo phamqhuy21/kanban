@@ -1,4 +1,4 @@
-const { mongoose } = require("../models");
+const { mongoose, card } = require("../models");
 const db = require("../models");
 const Board = db.board;
 const List = db.list;
@@ -22,7 +22,7 @@ exports.createList = async (req, res) => {
     boardId,
     {
       $push: {
-        lists: list._id,
+        lists: list._id.toString(),
       },
     },
     { new: true, useFindAndModify: false }
@@ -44,50 +44,106 @@ exports.createList = async (req, res) => {
     });
 };
 
-exports.deleteList = (req, res) => {
-  let listId = mongoose.Types.ObjectId(req.params.id);
+exports.deleteListInBoard = async (req, res) => {
+  //   let listId = mongoose.Types.ObjectId(req.params.id);
+  let listId = req.params.id;
   let boardId = req.query.boardId;
 
-  Board.findByIdAndUpdate(
-    boardId,
-    {
-      $pull: {
-        lists: listId,
+  try {
+    let board = await Board.findByIdAndUpdate(
+      boardId,
+      {
+        $pull: {
+          lists: listId,
+        },
       },
-    },
-    { useFindAndModify: false, new: true }
-  )
-    .then((data) => {
-      if (data)
-        return res.json({
-          message: "List was removed successfully!",
-        });
-      else {
-        return res.status(404).json({
-          message: "Cannot remove List",
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({
-        message: "Could not remove List ",
+      { useFindAndModify: false, new: true }
+    ).lean();
+    let list = await List.findByIdAndRemove(listId, {
+      useFindAndModify: false,
+    }).lean();
+    if (board && list) {
+      return res.json({
+        message: "List was deleted successfully!",
       });
+    } else {
+      return res.status(404).json({
+        message: "Cannot delete List",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: error,
     });
-  //   List.findByIdAndRemove(listId)
-  //     .then((data) => {
-  //       if (!data) {
-  //         res.status(404).json({
-  //           message: `Cannot delete List with id=${listId}`,
-  //         });
-  //       } else {
-  //         res.json({
-  //           message: "List was deleted successfully!",
-  //         });
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       res.status(500).json({
-  //         message: "Could not delete List with id=" + listId,
-  //       });
-  //     });
+  }
+};
+
+exports.updatePositionCardInList = async (req, res) => {
+  if (!req.body) {
+    return res.status(400).send({
+      message: "Data to update can not be empty!",
+    });
+  }
+
+  let { data } = req.body;
+  let { listSourceId, listDestinationId, listId } = req.body;
+  if (!listId) {
+    let listSource = await List.findByIdAndUpdate(
+      listSourceId,
+      data.listCardsSource,
+      {
+        new: true,
+        useFindAndModify: false,
+      }
+    ).lean();
+    let listDestination = await List.findByIdAndUpdate(
+      listDestinationId,
+      data.listCardsDestination,
+      {
+        new: true,
+        useFindAndModify: false,
+      }
+    ).lean();
+    if (listSource && listDestination) {
+      return res.status(200).json({
+        message: "Update position cards in lists successfully !",
+      });
+    } else {
+      return res.status(404).json({
+        message: "Cannot update position cards in lists",
+      });
+    }
+  } else {
+    let list = await List.findByIdAndUpdate(listId, data.list, {
+      new: true,
+      useFindAndModify: false,
+    }).lean();
+    if (list) {
+      return res.status(200).json({
+        message: "Update position cards in lists successfully !",
+      });
+    } else {
+      return res.status(404).json({
+        message: "Cannot update position cards in lists",
+      });
+    }
+  }
+};
+
+exports.updateList = async (req, res) => {
+  let { listId, data } = req.body;
+  if (listId) {
+    let list = await List.findByIdAndUpdate(listId, data, {
+      new: true,
+      useFindAndModify: false,
+    }).lean();
+    if (list) {
+      return res.status(200).json({
+        message: "Update list successfully",
+      });
+    } else
+      return res.status(400).json({
+        message: "Update list failed",
+      });
+  }
 };

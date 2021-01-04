@@ -18,9 +18,15 @@ module.exports = (app) => {
 
   app.put(
     "/api/v1/board/:id",
-    [verifyUser.checkUserExisted],
-    controller.addMemberBoard
+    [verifyUser.checkUserExisted, verifyUser.checkUserIsMemberBoard],
+    controller.updateBoard
   );
+
+  //   app.put(
+  //     "/api/v1/board/:id",
+  //     [verifyUser.verifyToken],
+  //     controller.updatePositionList
+  //   );
 
   app.get(
     "/api/v1/board/:id",

@@ -9,6 +9,10 @@ const reducer = (state = initialState, action) => {
       let newState = cloneDeep(action.payload.data);
       return newState;
     }
+    case boardsConst.UPDATE_BOARD_SUCCESS: {
+      let newState = cloneDeep(action.payload.data);
+      return newState;
+    }
     default:
       return state;
   }

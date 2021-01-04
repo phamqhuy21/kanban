@@ -32,3 +32,21 @@ export const getBoardDetailSuccess = (data) => {
     },
   };
 };
+
+export const updateBoardRequest = (data) => {
+  return {
+    type: boardsConst.UPDATE_BOARD_REQUEST,
+    payload: {
+      data,
+    },
+  };
+};
+
+export const updateBoardSuccess = (data) => {
+  return {
+    type: boardsConst.UPDATE_BOARD_SUCCESS,
+    payload: {
+      data,
+    },
+  };
+};

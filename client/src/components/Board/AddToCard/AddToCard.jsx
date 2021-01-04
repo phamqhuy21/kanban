@@ -14,10 +14,10 @@ import UploadFileForm from "./UploadFileForm";
 import ExpirationDateForm from "./ExpirationDateForm";
 import MemberForm from "./MemberForm";
 import ManageLabel from "../../../containers/DetailCard/ManageLabel";
+import MemberFormContainer from "../../../containers/AddToCard/MemberFormContainer";
 
 AddToCard.propTypes = {
   card: PropTypes.object,
-  handleAddMember: PropTypes.func,
   selectLabel: PropTypes.func,
   handleSaveExDate: PropTypes.func,
   handleDeleteExDate: PropTypes.func,
@@ -39,7 +39,6 @@ const style = {
 function AddToCard(props) {
   const {
     card,
-    handleAddMember,
     selectLabel,
     handleSaveExDate,
     handleDeleteExDate,
@@ -48,31 +47,12 @@ function AddToCard(props) {
     handleDeleteGround,
   } = props;
 
-  console.log(card);
-
   return (
     <div>
       <h3>Thêm vào thẻ</h3>
       <div>
-        <Dropdown
-          overlay={<MemberForm card={card} handleAddMember={handleAddMember} />}
-          trigger="click"
-        >
-          <Button style={style.styleButton}>
-            <UserOutlined />
-            Thành viên
-          </Button>
-        </Dropdown>
-        <Dropdown
-          overlay={<ManageLabel card={card} selectLabel={selectLabel} />}
-          trigger="click"
-          placement="bottomRight"
-        >
-          <Button style={style.styleButton}>
-            <TagOutlined />
-            Nhãn
-          </Button>
-        </Dropdown>
+        <MemberFormContainer />
+        <ManageLabel />
         <Dropdown
           overlay={
             <ExpirationDateForm

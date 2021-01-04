@@ -82,7 +82,7 @@ isModerator = (req, res, next) => {
 };
 
 isMemberBoard = (req, res, next) => {
-  let boardId = req.params.id || req.query.boardId;
+  let boardId = req.params.id || req.query.boardId || req.body.boardId;
   let userId = req.userId;
   Board.findById(boardId).exec((err, board) => {
     if (err) {
@@ -96,7 +96,7 @@ isMemberBoard = (req, res, next) => {
         next();
         return;
       } else {
-        res.status(403).send({ message: "Unauthorized!" });
+        res.status(403).send({ message: "Forbidden!" });
         return;
       }
     } else {

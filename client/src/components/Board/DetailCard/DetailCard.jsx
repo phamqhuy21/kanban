@@ -1,14 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Modal, Layout, Image } from "antd";
-import Description from "./Description";
-import Activity from "../Activity/Activity";
-import Manipulation from "../Manupulation/Manipulation";
-import Label from "./Label";
-import ExpirationDate from "./ExpirationDate";
-import Comments from "./Comment";
-import AddToCardContainer from "../../../containers/AddToCardContainer";
-import DescriptionContainer from "../../../containers/DetailCard/DescriptionContainer";
 
 DetailCard.propTypes = {
   stateCard: PropTypes.shape({
@@ -24,27 +16,18 @@ DetailCard.propTypes = {
 };
 
 const style = {
-  bodyModalStyle: { padding: "1vh", backgroundColor: "#f5f5f5" },
-  contentStyle: { backgroundColor: "#f5f5f5" },
-  coverItemStyle: {
-    display: "flex",
-    paddingLeft: "1vw",
-    backgroundColor: "#f5f5f5",
+  titleStyle: {
+    marginTop: "3vh",
+    marginBottom: "2vh",
+    paddingLeft: "1.5vw",
+    paddingTop: "2vh",
+    paddingBottom: "2vh",
   },
-  siderStyle: { backgroundColor: "#f5f5f5" },
+  bodyModalStyle: { padding: "1vh", backgroundColor: "#f5f5f5" },
 };
 
-const { Content, Sider } = Layout;
-
 function DetailCard(props) {
-  const {
-    stateCard,
-    visible,
-    handleCancel,
-    user,
-    addComment,
-    handleCheckSuccess,
-  } = props;
+  const { stateCard, visible, handleCancel, children } = props;
 
   console.log(stateCard);
 
@@ -53,22 +36,11 @@ function DetailCard(props) {
       className="modalCardDetail"
       title={
         <React.Fragment>
-          {/* {stateCard.groundImage.length > 0 ? (
+          {Object.keys(stateCard.background).length > 0 ? (
             <div style={{ backgroundColor: "#bdbdbd", textAlign: "center" }}>
-              <Image width={200} src={stateCard.groundImage} />
+              <Image width={200} src={stateCard.background.url} />
             </div>
-          ) : null} */}
-          <h2
-            style={{
-              marginTop: "3vh",
-              marginBottom: "2vh",
-              paddingLeft: "1.5vw",
-              paddingTop: "2vh",
-              paddingBottom: "2vh",
-            }}
-          >
-            {stateCard.title}
-          </h2>
+          ) : null}
         </React.Fragment>
       }
       visible={visible}
@@ -77,26 +49,7 @@ function DetailCard(props) {
       width="60vw"
       bodyStyle={style.bodyModalStyle}
     >
-      <Layout>
-        <Content>
-          <div style={style.coverItemStyle}>
-            {stateCard.labels.length > 0 ? <Label card={stateCard} /> : null}
-            {/* {Object.keys(stateCard.exDate).length > 0 ? (
-              <ExpirationDate
-                card={stateCard}
-                handleCheckSuccess={handleCheckSuccess}
-              />
-            ) : null} */}
-          </div>
-          <DescriptionContainer card={stateCard} />
-          {/* <Activity card={stateCard} user={user} />
-          <Comments user={user} addComment={addComment} card={stateCard} /> */}
-        </Content>
-        <Sider style={style.siderStyle}>
-          <AddToCardContainer card={stateCard} />
-          <Manipulation card={stateCard} />
-        </Sider>
-      </Layout>
+      <Layout>{children}</Layout>
     </Modal>
   );
 }

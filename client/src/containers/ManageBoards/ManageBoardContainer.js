@@ -59,33 +59,29 @@ function ManageBoardContainer(props) {
 
   return (
     <React.Fragment>
-      {boardsReducer.length > 0 ? (
-        <React.Fragment>
-          <GlobalMenuContainer />
-          <Content style={style.contentStyle}>
-            <div style={{ padding: "2vh 15vw" }}>
-              <Row>
-                <Col span={7}>
-                  <SiderManageBoards />
-                </Col>
-                <Col span={16} offset={1}>
-                  <ContentManageBoards
-                    boards={boardsReducer}
-                    openFormCreate={openFormCreate}
-                    handleOpenFormCreate={handleOpenFormCreate}
-                  >
-                    <CreateBoardContainer
-                      openFormCreate={openFormCreate}
-                      handleCloseFormCreate={handleCloseFormCreate}
-                      handleCreateBoard={handleCreateBoard}
-                    />
-                  </ContentManageBoards>
-                </Col>
-              </Row>
-            </div>
-          </Content>
-        </React.Fragment>
-      ) : null}
+      <GlobalMenuContainer />
+      <Content style={style.contentStyle}>
+        <div style={{ padding: "2vh 15vw" }}>
+          <Row>
+            <Col span={7}>
+              <SiderManageBoards />
+            </Col>
+            <Col span={16} offset={1}>
+              <ContentManageBoards
+                boards={boardsReducer}
+                openFormCreate={openFormCreate}
+                handleOpenFormCreate={handleOpenFormCreate}
+              >
+                <CreateBoardContainer
+                  openFormCreate={openFormCreate}
+                  handleCloseFormCreate={handleCloseFormCreate}
+                  handleCreateBoard={handleCreateBoard}
+                />
+              </ContentManageBoards>
+            </Col>
+          </Row>
+        </div>
+      </Content>
     </React.Fragment>
   );
 }

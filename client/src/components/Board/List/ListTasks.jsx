@@ -7,7 +7,7 @@ import FormAddCard from "../Card/FormAddCard";
 import FormEditList from "./FormEditList";
 import CardContainer from "../../../containers/CardContainer";
 
-List.propTypes = {
+ListTasks.propTypes = {
   provided: PropTypes.shape({
     draggableProps: PropTypes.shape({
       style: PropTypes.object,
@@ -39,10 +39,12 @@ List.propTypes = {
   setOpenForm: PropTypes.func,
 };
 
-const listStyle = {
-  backgroundColor: "#f5f5f5",
-  borderRadius: "0.2rem",
-  padding: "0.5rem",
+const style = {
+  listStyle: {
+    backgroundColor: "#f5f5f5",
+    borderRadius: "0.2rem",
+    padding: "0.5rem",
+  },
 };
 
 const getStyle = (isDragging, style) => ({
@@ -57,7 +59,7 @@ const getStyle = (isDragging, style) => ({
     "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif",
 });
 
-function Lists(props) {
+function ListTasks(props) {
   const {
     provided,
     innerRef,
@@ -72,7 +74,6 @@ function Lists(props) {
     handleEditCard,
     handleAddCard,
     openFormCard,
-    index,
     handleEditList,
     setVisibleFormEdit,
     visibleFormEditList,
@@ -96,12 +97,12 @@ function Lists(props) {
               className="list-kanban"
             >
               <List
-                style={listStyle}
-                title={list.title}
+                style={style.listStyle}
                 header={
                   <List.Item
                     {...dragHandleProps}
                     style={{ padding: "0", margin: "0" }}
+                    title={list.title}
                     extra={
                       <Popover
                         title="Thao tác"
@@ -171,7 +172,6 @@ function Lists(props) {
                 {provided.placeholder}
               </List>
               <FormEditList
-                index={index}
                 list={list}
                 handleSave={handleEditList}
                 setVisible={setVisibleFormEdit}
@@ -185,4 +185,4 @@ function Lists(props) {
   );
 }
 
-export default Lists;
+export default ListTasks;

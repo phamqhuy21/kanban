@@ -4,20 +4,20 @@ import Modal from "antd/lib/modal/Modal";
 
 function FormEditList(props) {
   const [form] = Form.useForm();
-  const { list, index, handleSave, setVisible, visible } = props;
+  const { list, handleSave, setVisible, visible } = props;
 
   const handleClick = () => {
     form.validateFields().then((value) => {
-      handleSave(index, value.status);
+      handleSave(list._id, value.title);
     });
     setVisible(false);
   };
 
   useEffect(() => {
     form.setFieldsValue({
-      status: list.status,
+      title: list.title,
     });
-  });
+  }, [list]);
 
   return (
     <Modal
@@ -30,8 +30,25 @@ function FormEditList(props) {
         setVisible(false);
       }}
     >
-      <Form form={form} name="basic">
-        <Form.Item style={{ marginBottom: "0.7rem" }} name="status">
+      <Form
+        form={form}
+        name="basic"
+        onKeyPress={(event) => {
+          if (event.key === "Enter") {
+            handleClick();
+          }
+        }}
+      >
+        <Form.Item
+          style={{ marginBottom: "0.7rem" }}
+          name="title"
+          rules={[
+            {
+              required: true,
+              message: "Tiêu đề danh sách không được bỏ trống",
+            },
+          ]}
+        >
           <Input style={{ border: "none" }} bordered={false} />
         </Form.Item>
         <Form.Item style={{ marginBottom: "1vw" }}>

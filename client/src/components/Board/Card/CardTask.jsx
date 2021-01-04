@@ -1,12 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Draggable } from "react-beautiful-dnd";
-import { Card, Modal, Image } from "antd";
+import { Card } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import FormEditCard from "./FormEditCard";
-import DetailcardContainer from "../../../containers/DetailcardContainer";
 
-Card.propTypes = {
+CardTask.propTypes = {
   card: PropTypes.shape({
     id: PropTypes.string,
     saved: PropTypes.bool,
@@ -19,13 +17,16 @@ Card.propTypes = {
   onDeleteCard: PropTypes.func,
 };
 
-function Cards(props) {
-  const { card, index, handleSave, onDeleteCard } = props;
+function CardTask(props) {
+  const {
+    card,
+    index,
+    refCard,
+    onDeleteCard,
+    handleOpenDetailCard,
+    onEditCard,
+  } = props;
   const [extra, setExtra] = useState(false);
-  const [visibleFormEditCard, setVisibleFormEditCard] = useState(false);
-  const [cardSelected, setCardSelected] = useState(null);
-  const [visibleModalCard, setVisibleModalCard] = useState(false);
-  const refCard = useRef(null);
 
   function getStyle(style, snapshot) {
     if (!snapshot.isDropAnimating) {
@@ -36,8 +37,6 @@ function Cards(props) {
       transitionDuration: `0.001s`,
     };
   }
-
-  console.log(card);
 
   return (
     <React.Fragment>
@@ -90,7 +89,7 @@ function Cards(props) {
                       ) : null} */}
                       {card.labels.length > 0 ? (
                         <div style={{ display: "flex" }}>
-                          {card.label.map((item, index) => {
+                          {card.labels.map((label, index) => {
                             return (
                               <div
                                 key={index}
@@ -98,7 +97,7 @@ function Cards(props) {
                                   width: "18%",
                                   height: "1vh",
                                   marginRight: "0.2vw",
-                                  backgroundColor: item,
+                                  backgroundColor: label.color,
                                   borderRadius: "5px",
                                 }}
                               />
@@ -109,8 +108,7 @@ function Cards(props) {
                       <div
                         style={{ paddingTop: "0.5vh" }}
                         onClick={() => {
-                          setCardSelected({ ...card });
-                          setVisibleModalCard(true);
+                          handleOpenDetailCard(card);
                         }}
                       >
                         {card.title}
@@ -128,7 +126,7 @@ function Cards(props) {
                               marginRight: "0.5rem",
                               cursor: "pointer",
                             }}
-                            onClick={() => setVisibleFormEditCard(true)}
+                            onClick={onEditCard}
                           />
                           <DeleteOutlined
                             style={{
@@ -149,37 +147,8 @@ function Cards(props) {
           );
         }}
       </Draggable>
-      {cardSelected ? (
-        <DetailcardContainer
-          card={cardSelected}
-          visible={visibleModalCard}
-          setVisible={setVisibleModalCard}
-        />
-      ) : null}
-      {refCard.current ? (
-        <Modal
-          closable={false}
-          visible={visibleFormEditCard}
-          footer={false}
-          width={refCard.current.getBoundingClientRect().width}
-          bodyStyle={{ padding: "0" }}
-          style={{
-            position: "absolute",
-            top: refCard.current.getBoundingClientRect().top,
-            left: refCard.current.getBoundingClientRect().left,
-          }}
-          onCancel={() => setVisibleFormEditCard(false)}
-        >
-          <FormEditCard
-            card={card}
-            index={index}
-            handleSave={handleSave}
-            setVisible={setVisibleFormEditCard}
-          />
-        </Modal>
-      ) : null}
     </React.Fragment>
   );
 }
 
-export default Cards;
+export default CardTask;

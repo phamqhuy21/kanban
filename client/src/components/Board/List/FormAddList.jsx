@@ -8,10 +8,13 @@ function FormAddList(props) {
 
   const handleClick = () => {
     formAdd.validateFields().then((value) => {
-      handleAddList(value.list);
+      if (typeof value.list !== "undefined") {
+        if (value.list.length > 0) {
+          handleAddList(value.list);
+          setVisible(false);
+        }
+      }
     });
-
-    setVisible(false);
   };
   return (
     <Card
@@ -24,16 +27,42 @@ function FormAddList(props) {
         padding: "0.2rem",
       }}
     >
-      <Form form={formAdd}>
+      <Form
+        form={formAdd}
+        onKeyPress={(event) => {
+          if (event.key === "Enter") {
+            handleClick();
+          }
+        }}
+      >
         <Form.Item style={{ marginBottom: "0.5vw" }} name="list">
           <Input placeholder="Nhập tiêu đề danh sách ..." />
         </Form.Item>
         <Form.Item style={{ marginBottom: "0.5vw" }}>
-          <Button className="btn-addList" onClick={handleClick}>
+          <Button
+            className="btn-addList"
+            onClick={handleClick}
+            type="primary"
+            style={{
+              backgroundColor: "#5aac44",
+              color: "#fafafa",
+              borderRadius: "0.2rem",
+              border: "none",
+            }}
+          >
             Thêm danh sách
           </Button>
           <CloseOutlined
-            style={{ fontSize: "1.2rem", cursor: "pointer" }}
+            style={{
+              position: "absolute",
+              top: "1vh",
+              padding: "0 5px",
+              backgroundColor: "transparent",
+              fontSize: "1.2rem",
+              border: "none",
+              cursor: "pointer",
+              color: "#9e9e9e",
+            }}
             onClick={() => {
               setVisible(false);
             }}

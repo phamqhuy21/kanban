@@ -1,16 +1,12 @@
 import { Layout } from "antd";
 import React, { useEffect } from "react";
-import Header from "../components/Header/Header";
 import Content from "../components/Content/Content";
 import BoardContainer from "./BoardContainer";
 import GlobalMenuContainer from "./GlobalMenu/GlobalMenuContainer";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouteMatch } from "react-router-dom";
 import { getBoardDetailReq } from "../redux/actions/boards";
-
-const style = {
-  contentStyle: { background: "#fff" },
-};
+import HeaderContainer from "./Header/HeaderContainer";
 
 function KanBan(props) {
   const dispatch = useDispatch();
@@ -24,9 +20,11 @@ function KanBan(props) {
     <React.Fragment>
       <GlobalMenuContainer />
       {Object.keys(detailBoardReducer).length > 0 ? (
-        <Content style={style.contentStyle}>
-          <Layout>
-            <Header />
+        <Content>
+          <Layout
+            style={{ backgroundColor: detailBoardReducer.backgroundColor }}
+          >
+            <HeaderContainer />
             <Content>
               <BoardContainer />
             </Content>

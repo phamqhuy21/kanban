@@ -5,7 +5,7 @@ import { CloseOutlined } from "@ant-design/icons";
 function FormAddCard({ setOpenForm, list, handleAddCard }) {
   const [form] = Form.useForm();
 
-  const onAddCart = () => {
+  const onAddCard = () => {
     form.validateFields().then((value) => {
       if (typeof value.task !== "undefined") {
         if (value.task.length > 0) handleAddCard(value.task);
@@ -13,7 +13,15 @@ function FormAddCard({ setOpenForm, list, handleAddCard }) {
     });
   };
   return (
-    <Form form={form} name="basic">
+    <Form
+      form={form}
+      name="basic"
+      onKeyPress={(event) => {
+        if (event.key === "Enter") {
+          onAddCard();
+        }
+      }}
+    >
       <Form.Item style={{ marginBottom: "0.3rem" }} name="task">
         <Card
           headStyle={{
@@ -33,12 +41,15 @@ function FormAddCard({ setOpenForm, list, handleAddCard }) {
       </Form.Item>
       <Form.Item style={{ marginBottom: "0.3rem" }}>
         <Button
+          className="btn-addCard"
           style={{
             backgroundColor: "#5aac44",
             color: "#fafafa",
             borderRadius: "0.2rem",
+            border: "none",
           }}
-          onClick={onAddCart}
+          type="primary"
+          onClick={onAddCard}
         >
           Thêm thẻ
         </Button>

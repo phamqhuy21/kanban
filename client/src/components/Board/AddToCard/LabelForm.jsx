@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { Form, Input, Card, Row, Col } from "antd";
+import React, { useEffect, useState } from "react";
+import { Form, Input, Card, Row, Col, Button } from "antd";
 import { CheckOutlined, EditOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
+import { findIndex, indexOf } from "lodash";
 
 LabelForm.propTypes = {
   card: PropTypes.shape({
@@ -10,21 +11,43 @@ LabelForm.propTypes = {
   selectLabel: PropTypes.func,
 };
 
-const COLOR = ["green", "red", "blue", "yellow", "orange", "violet", "gray"];
+const COLOR = [
+  "#43a047",
+  "#03a9f4",
+  "#f44336",
+  "#ff9800",
+  "#ffeb3b",
+  "#ba68c8",
+  "#d4e157",
+];
 
 function LabelForm(props) {
-  const { card, selectLabel } = props;
-  const [label, setLabel] = useState(COLOR);
+  const {
+    card,
+    selectLabel,
+    labels,
+    handleModeCreate,
+    handleModeUpdate,
+  } = props;
+  const [stateLabel, setStateLabel] = useState();
   const [form] = Form.useForm();
 
   const handleSearch = () => {
     form.validateFields().then((value) => {
-      var fil = COLOR.filter((color) => {
-        return color.search(`${value.search}`) >= 0;
-      });
-      setLabel(fil);
+      if (value.search.length > 0) {
+        var fil = labels.filter((label) => {
+          return label.title && label.title.search(`${value.search}`) >= 0;
+        });
+        setStateLabel(fil);
+      } else {
+        setStateLabel(labels);
+      }
     });
   };
+
+  useEffect(() => {
+    setStateLabel(labels);
+  }, []);
 
   return (
     <Card
@@ -45,37 +68,65 @@ function LabelForm(props) {
         <Form.Item>
           <div>
             <p style={{ fontWeight: "500" }}>Nhãn</p>
-            {label.map((color, index) => {
-              return (
-                <Row style={{ marginBottom: "0.5vh" }} key={index}>
-                  <Col span={22}>
-                    <Card
-                      size="small"
-                      extra={
-                        card.label.includes(color) ? (
-                          <CheckOutlined style={{ color: "white" }} />
-                        ) : null
-                      }
+            {stateLabel ? (
+              <div
+                style={{
+                  overflow: "auto",
+                  maxHeight: "70vh",
+                  paddingRight: "10px",
+                }}
+              >
+                {stateLabel.map((label, index) => {
+                  return (
+                    <Row
                       style={{
-                        borderRadius: "0.2rem",
-                        backgroundColor: `${color}`,
-                        cursor: "pointer",
+                        marginBottom: "0.5vh",
                       }}
-                      bodyStyle={{ padding: "0" }}
-                      title="as"
-                      headStyle={{ padding: "0 1vw" }}
-                      onClick={() => {
-                        selectLabel(color, card);
-                      }}
-                    />
-                  </Col>
-                  <Col span={2}>
-                    <EditOutlined style={{ marginLeft: "0.5vw" }} />
-                  </Col>
-                </Row>
-              );
-            })}
+                      key={index}
+                    >
+                      <Col span={22}>
+                        <Card
+                          size="small"
+                          extra={
+                            findIndex(card.labels, (cardLabel) => {
+                              return cardLabel._id === label._id;
+                            }) !== -1 ? (
+                              <CheckOutlined style={{ color: "#fff" }} />
+                            ) : null
+                          }
+                          title={label.title}
+                          headStyle={{ color: "#fff" }}
+                          style={{
+                            height: "35px",
+                            borderRadius: "0.2rem",
+                            backgroundColor: `${label.color}`,
+                            cursor: "pointer",
+                          }}
+                          bodyStyle={{ padding: "0" }}
+                          onClick={() => {
+                            selectLabel(label, card);
+                          }}
+                        />
+                      </Col>
+                      <Col span={2}>
+                        <EditOutlined
+                          style={{ marginLeft: "0.5vw" }}
+                          onClick={() => {
+                            handleModeUpdate(label);
+                          }}
+                        />
+                      </Col>
+                    </Row>
+                  );
+                })}
+              </div>
+            ) : null}
           </div>
+        </Form.Item>
+        <Form.Item style={{ marginBottom: "1vh" }}>
+          <Button style={{ width: "100%" }} onClick={handleModeCreate}>
+            Tạo nhãn mới
+          </Button>
         </Form.Item>
       </Form>
     </Card>

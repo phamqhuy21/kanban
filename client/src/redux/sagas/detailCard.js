@@ -25,17 +25,17 @@ import { cloneDeep, findIndex } from "lodash";
 
 function* addDescriptionSagas({ payload }) {
   const { id, content } = payload;
-  const board = yield select((state) => state.board);
-  const newState = cloneDeep(board);
-  yield newState.forEach((element) => {
-    element.task.forEach((e) => {
-      if (e.id === id) {
-        e.description = content;
+  const listTasksReducer = yield select((state) => state.listTasksReducer);
+  const newState = cloneDeep(listTasksReducer);
+  yield newState.forEach((list) => {
+    list.cards.forEach((card) => {
+      if (card._id === id) {
+        card.description = content;
       }
     });
   });
   yield put(addDescriptionSuccess(newState));
-  yield put(addActionCardSuccess("thêm mô tả", id));
+  //   yield put(addActionCardSuccess("thêm mô tả", id));
 }
 
 function* addCommentSagas({ payload }) {

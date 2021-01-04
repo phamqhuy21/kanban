@@ -1,10 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Button } from "antd";
 import { HomeOutlined, TableOutlined } from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { getUserReq } from "../../redux/actions/user";
 
 GlobalMenu.propTypes = {};
 
@@ -18,12 +16,7 @@ const style = {
 };
 
 function GlobalMenu(props) {
-  const usersReducer = useSelector((state) => state.usersReducer);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getUserReq());
-  }, [dispatch]);
+  const { usersReducer } = props;
 
   return (
     <React.Fragment>

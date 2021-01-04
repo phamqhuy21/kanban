@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import AddToCard from "../components/Board/AddToCard/AddToCard";
-import { findIndex } from "lodash";
+import { cloneDeep, findIndex } from "lodash";
 import {
   addExDateRequest,
   addFileRequest,
@@ -13,36 +13,18 @@ import {
   deleteLabelRequest,
   deleteMemberRequest,
 } from "../redux/actions/board";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouteMatch } from "react-router-dom";
+import { updateCardTask } from "../api/cardTask";
+import { message } from "antd";
+import { getDataCardReq } from "../redux/actions/cardTask";
 
-AddToCardContainer.propTypes = {
-  card: PropTypes.object,
-};
+AddToCardContainer.propTypes = {};
 
 function AddToCardContainer(props) {
-  const { card } = props;
+  const cardTaskReducer = useSelector((state) => state.cardTaskReducer);
   const dispatch = useDispatch();
-
-  const handleAddMember = (mem, card) => {
-    console.log(card);
-    if (
-      findIndex(card.members, function (member) {
-        return member.alias === mem.alias;
-      }) !== -1
-    ) {
-      dispatch(deleteMemberRequest(card.id, mem));
-    } else {
-      dispatch(addMemberRequest(card.id, mem));
-    }
-  };
-
-  const selectLabel = (color, card) => {
-    if (card.label.includes(color) === false) {
-      dispatch(addLabelRequest(card.id, color));
-    } else {
-      dispatch(deleteLabelRequest(card.id, color));
-    }
-  };
+  const match = useRouteMatch();
 
   const handleSaveExDate = (card, time, date, timer) => {
     dispatch(
@@ -62,13 +44,14 @@ function AddToCardContainer(props) {
 
   const handlePreviewFile = (info) => {
     getBase64(info.originFileObj, (url) => {
-      dispatch(addFileRequest(card.id, url));
+      dispatch(addFileRequest(cardTaskReducer._id, url));
     });
   };
 
   const handlePreviewImg = (info, card) => {
     getBase64(info.originFileObj, (imageUrl) => {
-      dispatch(addGroundRequest(card.id, imageUrl));
+      console.log(imageUrl);
+      //   dispatch(addGroundRequest(card.id, imageUrl));
     });
   };
 
@@ -78,9 +61,7 @@ function AddToCardContainer(props) {
 
   return (
     <AddToCard
-      card={card}
-      handleAddMember={handleAddMember}
-      selectLabel={selectLabel}
+      card={cardTaskReducer}
       handleSaveExDate={handleSaveExDate}
       handleDeleteExDate={handleDeleteExDate}
       handlePreviewFile={handlePreviewFile}

@@ -32,3 +32,23 @@ export const deleteList = (boardId, listId) => {
   };
   return callApi(config);
 };
+
+export const updatePositionCards = (data) => {
+  let config = {
+    method: "put",
+    url: `${BASE_URL}/${PATH}/list/updateCards`,
+    headers: header,
+    data: data,
+  };
+  return callApi(config);
+};
+
+export const updateList = (data) => {
+  let config = {
+    method: "put",
+    url: `${BASE_URL}/${PATH}/list/update`,
+    headers: header,
+    data: data,
+  };
+  return callApi(config);
+};

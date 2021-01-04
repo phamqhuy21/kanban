@@ -1,6 +1,8 @@
 import React from "react";
-import { Upload, Card, Button } from "antd";
+import { Upload, Card, Button, message } from "antd";
 import PropTypes from "prop-types";
+import { uploadImage } from "../../../api/file";
+import { useRouteMatch } from "react-router-dom";
 
 UploadImageForm.propTypes = {
   card: PropTypes.shape({
@@ -12,10 +14,30 @@ UploadImageForm.propTypes = {
 
 function UploadImageForm(props) {
   const { card, handlePreviewImg, handleDeleteGround } = props;
+  const match = useRouteMatch();
   const handleChange = (info) => {
+    let boardId = match.params.id;
+    let cardId = card._id;
     if (info.file.status === "uploading") {
       return;
+    } else {
+      uploadImage(cardId, boardId, info.file.originFileObj)
+        .then((res) => {
+          if (res.status === 200) {
+            message.success("Cập nhật ảnh bìa thành công");
+          } else message.error("Cập nhật ảnh bìa thất bại");
+        })
+        .catch((err) => {
+          message.error("Cập nhật ảnh bìa thất bại");
+        });
+      if (info.file.status === "uploading") {
+        return;
+      }
     }
+  };
+
+  const dummyRequest = ({ file, onSuccess }) => {
+    onSuccess("ok");
   };
 
   const uploadButton = (
@@ -35,10 +57,10 @@ function UploadImageForm(props) {
         <div id="scroll-upload" style={{ marginBottom: "2vh" }}>
           <Upload
             style={{ width: "10vw" }}
+            customRequest={dummyRequest}
             name="avatar"
             listType="picture"
             className="avatar-uploader"
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
             onChange={handleChange}
             onPreview={(infor) => {
               handlePreviewImg(infor, card);

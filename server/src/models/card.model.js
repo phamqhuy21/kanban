@@ -12,6 +12,7 @@ const Card = mongoose.model(
       background: String,
       files: [],
       comment: [],
+      actions: [],
       deadline: Date,
     },
     { timestamps: true }

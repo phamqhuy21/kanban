@@ -3,6 +3,8 @@ import { Card } from "antd";
 import { Upload, message, Button } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
+import { uploadFile } from "../../../api/file";
+import { useRouteMatch } from "react-router-dom";
 
 UploadFileForm.propTypes = {
   card: PropTypes.object,
@@ -15,17 +17,31 @@ const PROP = {
   headers: {
     authorization: "authorization-text",
   },
-  onChange(info) {
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
+};
+
+const dummyRequest = ({ file, onSuccess }) => {
+  onSuccess("ok");
 };
 
 function UploadFileForm(props) {
   const { card, handlePreviewFile } = props;
+  const match = useRouteMatch();
+
+  const handleChange = (info) => {
+    let boardId = match.params.id;
+    let cardId = card._id;
+    if (info.file.status === "uploading") {
+      return;
+    } else {
+      uploadFile(cardId, boardId, info.file.originFileObj)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
 
   return (
     <Card
@@ -37,6 +53,8 @@ function UploadFileForm(props) {
     >
       <Upload
         {...PROP}
+        customRequest={dummyRequest}
+        onChange={handleChange}
         onPreview={(infor) => {
           handlePreviewFile(infor, card);
         }}

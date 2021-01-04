@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Card, Row, Col, Form } from "antd";
+import { Card, Row, Col, Form, message } from "antd";
 import { useDispatch } from "react-redux";
 import { AlignLeftOutlined } from "@ant-design/icons";
 import Description from "../../components/Board/DetailCard/Description";
+import { updateCardTask } from "../../api/cardTask";
+import { useRouteMatch } from "react-router-dom";
+import { getBoardDetailReq } from "../../redux/actions/boards";
+import { addDescriptionRequest } from "../../redux/actions/board";
+import { getDataCardReq } from "../../redux/actions/cardTask";
 
 DescriptionContainer.propTypes = {
   card: PropTypes.shape({
@@ -32,12 +37,32 @@ const style = {
 function DescriptionContainer(props) {
   const { card } = props;
   const [openForm, setOpenForm] = useState(false);
+  const [description, setDescription] = useState("");
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const match = useRouteMatch();
 
   const handleSave = () => {
     form.validateFields().then((value) => {
-      //   dispatch(addDescriptionRequest(card.id, value.description));
+      let boardId = match.params.id;
+      let cardId = card._id;
+      let dataReq = {
+        boardId,
+        cardId,
+        data: value,
+      };
+      updateCardTask(dataReq)
+        .then((res) => {
+          if (res.status === 200) {
+            message.success("Thêm mô tả cho thẻ thành công");
+            dispatch(getBoardDetailReq(boardId));
+            dispatch(getDataCardReq(boardId, cardId));
+            dispatch(addDescriptionRequest(cardId, value.description));
+          } else message.error("Thêm mô tả cho thẻ thất bại");
+        })
+        .catch((err) => {
+          message.error("Thêm mô tả cho thẻ thất bại");
+        });
     });
     setOpenForm(false);
   };
@@ -47,6 +72,7 @@ function DescriptionContainer(props) {
   };
 
   useEffect(() => {
+    setDescription(card.description);
     form.setFieldsValue({
       description: card.description,
     });
@@ -56,20 +82,21 @@ function DescriptionContainer(props) {
     <Card
       title={
         <Row>
-          <Col span={2}>
-            <AlignLeftOutlined />
+          <Col span={1}>
+            <AlignLeftOutlined style={{ color: "#757575" }} />
           </Col>
-          <Col span={22}>
-            <span>Mô tả</span>
+          <Col span={23}>
+            <span style={{ color: "#757575" }}>Mô tả</span>
           </Col>
         </Row>
       }
       style={style.cardStyle}
       headStyle={style.headCardStyle}
+      bodyStyle={{ padding: "0 10px" }}
       bordered={false}
     >
       <Row>
-        <Col offset={2} span={22}>
+        <Col offset={1} span={23}>
           {openForm ? (
             <Form form={form}>
               <Description
@@ -84,9 +111,7 @@ function DescriptionContainer(props) {
                 setOpenForm(true);
               }}
             >
-              {card.description === ""
-                ? "Thêm mô tả chi tiết hơn ..."
-                : card.description}
+              {description === "" ? "Thêm mô tả chi tiết hơn ..." : description}
             </div>
           )}
         </Col>

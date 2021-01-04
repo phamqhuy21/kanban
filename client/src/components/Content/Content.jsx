@@ -4,7 +4,7 @@ import { Layout } from "antd";
 const { Content } = Layout;
 
 function Contents({ children }) {
-  return <Content style={{ backgroundColor: "#81c784" }}>{children}</Content>;
+  return <Content>{children}</Content>;
 }
 
 export default Contents;

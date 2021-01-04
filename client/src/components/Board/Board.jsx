@@ -15,11 +15,6 @@ Board.propTypes = {
 };
 
 const style = {
-  statusCoverStyle: {
-    backgroundColor: "#fff",
-    visibility: "hidden",
-    height: "12vh",
-  },
   boardCoverStyle: {
     height: "100vh",
   },
@@ -47,14 +42,13 @@ const getDropStyle = () => {
 };
 
 function Board(props) {
-  const { onDragEnd, renderBoard, handleAddList, detailBoardReducer } = props;
-  const data = useSelector((state) => state.board);
+  const { onDragEnd, renderBoard, handleAddList, listTasksReducer } = props;
   const [visibleAddList, setVisibleAddList] = useState(false);
 
   return (
     <DragDropContext
       onDragEnd={(result) => {
-        onDragEnd(result, data);
+        onDragEnd(result, listTasksReducer);
       }}
     >
       <Row style={style.boardCoverStyle}>
@@ -68,7 +62,7 @@ function Board(props) {
                   {...provided.droppableProps}
                   style={getDropStyle()}
                 >
-                  {renderBoard(detailBoardReducer.lists)}
+                  {renderBoard(listTasksReducer)}
                   {provided.placeholder}
                   <div style={style.coverAddList}>
                     {visibleAddList ? (

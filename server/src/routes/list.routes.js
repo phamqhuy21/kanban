@@ -16,5 +16,21 @@ module.exports = (app) => {
     controller.createList
   );
 
-  app.delete("/api/v1/list/:id", [authJwt.verifyToken], controller.deleteList);
+  app.delete(
+    "/api/v1/list/:id",
+    [authJwt.verifyToken],
+    controller.deleteListInBoard
+  );
+
+  app.put(
+    "/api/v1/list/updateCards",
+    [authJwt.verifyToken, authJwt.isMemberBoard],
+    controller.updatePositionCardInList
+  );
+
+  app.put(
+    "/api/v1/list/update",
+    [authJwt.verifyToken, authJwt.isMemberBoard],
+    controller.updateList
+  );
 };

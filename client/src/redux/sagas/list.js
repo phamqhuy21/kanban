@@ -21,11 +21,15 @@ function* deleteListSagas({ payload }) {
 }
 
 function* editListSagas({ payload }) {
-  const { indexList, status } = payload;
-  const board = yield select((state) => state.board);
-  const newState = cloneDeep(board);
-  newState[indexList].status = status;
-  put(editListSuccess(newState));
+  const { listId, title } = payload;
+  const listTasksReducer = yield select((state) => state.listTasksReducer);
+  let newState = cloneDeep(listTasksReducer);
+  newState = newState.map((list) => {
+    if (list._id === listId) {
+      return { ...list, title };
+    } else return { ...list };
+  });
+  yield put(editListSuccess(newState));
 }
 
 export function* watchActionList() {

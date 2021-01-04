@@ -18,61 +18,61 @@ export const updateDataSuccess = (data) => {
   };
 };
 
-export const addCartRequest = (content, id) => {
+export const addCardRequest = (data, listId) => {
   return {
     type: boardConstant.ADD_CARD_REQUEST,
     payload: {
-      content,
-      id,
+      data,
+      listId,
     },
   };
 };
 
-export const addCartSuccess = (content, id) => {
+export const addCardSuccess = (data, listId) => {
   return {
     type: boardConstant.ADD_CARD_SUCCESS,
     payload: {
-      content,
-      id,
+      data,
+      listId,
     },
   };
 };
 
-export const deleteCartRequest = (indexList, indexCard) => {
+export const deleteCardRequest = (listId, cardId) => {
   return {
     type: boardConstant.DELETE_CARD_REQUEST,
     payload: {
-      indexList,
-      indexCard,
+      listId,
+      cardId,
     },
   };
 };
 
-export const deleteCartSuccess = (board) => {
+export const deleteCardSuccess = (data) => {
   return {
     type: boardConstant.DELETE_CARD_SUCCESS,
     payload: {
-      board,
+      data,
     },
   };
 };
 
-export const editCartRequest = (indexList, indexCard, task) => {
+export const editCardRequest = (listId, cardId, data) => {
   return {
     type: boardConstant.EDIT_CARD_REQUEST,
     payload: {
-      indexList,
-      indexCard,
-      task,
+      listId,
+      cardId,
+      data,
     },
   };
 };
 
-export const editCartSuccess = (board) => {
+export const editCardSuccess = (data) => {
   return {
     type: boardConstant.EDIT_CARD_SUCCESS,
     payload: {
-      board,
+      data,
     },
   };
 };
@@ -113,21 +113,21 @@ export const deleteListSuccess = (board) => {
   };
 };
 
-export const editListRequest = (indexList, status) => {
+export const editListRequest = (listId, title) => {
   return {
     type: boardConstant.EDIT_LIST_REQUEST,
     payload: {
-      indexList,
-      status,
+      listId,
+      title,
     },
   };
 };
 
-export const editListSuccess = (board) => {
+export const editListSuccess = (data) => {
   return {
     type: boardConstant.EDIT_LIST_SUCCESS,
     payload: {
-      board,
+      data,
     },
   };
 };
@@ -142,11 +142,11 @@ export const addDescriptionRequest = (id, content) => {
   };
 };
 
-export const addDescriptionSuccess = (board) => {
+export const addDescriptionSuccess = (data) => {
   return {
     type: boardConstant.ADD_DESCRIPTION_SUCCESS,
     payload: {
-      board,
+      data,
     },
   };
 };

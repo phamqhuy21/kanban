@@ -19,6 +19,13 @@ export const getUserReq = () => {
   };
 };
 
+export const getUserFailed = (error) => {
+  return {
+    type: userConstant.GET_USER_FAILED,
+    payload: { error },
+  };
+};
+
 export const getUserSuccess = (data) => {
   return {
     type: userConstant.GET_USER_SUCCESS,

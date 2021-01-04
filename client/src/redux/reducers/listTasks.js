@@ -3,79 +3,80 @@ import { cloneDeep } from "lodash";
 
 let listID = 3;
 let cardID = 4;
+var initialState = [];
 
-var initialState = [
-  {
-    id: `list-${0}`,
-    status: "Hoàn tất",
-    task: [
-      {
-        id: `card-${0}`,
-        content: "Tìm hiểu ReactJS cơ bản",
-        description: "",
-        comment: [],
-        label: [],
-        exDate: {},
-        member: [],
-        groundImage: "",
-        file: [],
-        saved: false,
-        action: [],
-      },
-      {
-        id: `card-${1}`,
-        content: "Tìm hiểu ReactJS Nâng cao",
-        description: "",
-        comment: [],
-        label: [],
-        exDate: {},
-        member: [],
-        groundImage: "",
-        file: [],
-        saved: false,
-        action: [],
-      },
-    ],
-  },
-  {
-    id: `list-${1}`,
-    status: "Đang làm",
-    task: [
-      {
-        id: `card-${2}`,
-        content: "Tìm hiểu antd",
-        description: "",
-        comment: [],
-        label: [],
-        exDate: {},
-        member: [],
-        groundImage: "",
-        file: [],
-        saved: false,
-        action: [],
-      },
-    ],
-  },
-  {
-    id: `list-${2}`,
-    status: "Những việc cần làm",
-    task: [
-      {
-        id: `card-${3}`,
-        content: "Xây dựng website Trello",
-        description: "",
-        comment: [],
-        label: [],
-        exDate: {},
-        member: [],
-        groundImage: "",
-        file: [],
-        saved: false,
-        action: [],
-      },
-    ],
-  },
-];
+// var initialState = [
+//   {
+//     id: `list-${0}`,
+//     status: "Hoàn tất",
+//     task: [
+//       {
+//         id: `card-${0}`,
+//         content: "Tìm hiểu ReactJS cơ bản",
+//         description: "",
+//         comment: [],
+//         label: [],
+//         exDate: {},
+//         member: [],
+//         groundImage: "",
+//         file: [],
+//         saved: false,
+//         action: [],
+//       },
+//       {
+//         id: `card-${1}`,
+//         content: "Tìm hiểu ReactJS Nâng cao",
+//         description: "",
+//         comment: [],
+//         label: [],
+//         exDate: {},
+//         member: [],
+//         groundImage: "",
+//         file: [],
+//         saved: false,
+//         action: [],
+//       },
+//     ],
+//   },
+//   {
+//     id: `list-${1}`,
+//     status: "Đang làm",
+//     task: [
+//       {
+//         id: `card-${2}`,
+//         content: "Tìm hiểu antd",
+//         description: "",
+//         comment: [],
+//         label: [],
+//         exDate: {},
+//         member: [],
+//         groundImage: "",
+//         file: [],
+//         saved: false,
+//         action: [],
+//       },
+//     ],
+//   },
+//   {
+//     id: `list-${2}`,
+//     status: "Những việc cần làm",
+//     task: [
+//       {
+//         id: `card-${3}`,
+//         content: "Xây dựng website Trello",
+//         description: "",
+//         comment: [],
+//         label: [],
+//         exDate: {},
+//         member: [],
+//         groundImage: "",
+//         file: [],
+//         saved: false,
+//         action: [],
+//       },
+//     ],
+//   },
+// ];
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -98,32 +99,18 @@ const reducer = (state = initialState, action) => {
       return [...board];
     }
     case boardConstant.EDIT_LIST_SUCCESS: {
-      const { board } = action.payload;
-      return [...board];
+      const { data } = action.payload;
+      return [...data];
     }
     case boardConstant.ADD_CARD_SUCCESS: {
-      const { content, id } = action.payload;
-      const newTask = {
-        id: `card-${cardID}`,
-        content: content,
-        description: "",
-        comment: [],
-        label: [],
-        exDate: {},
-        member: [],
-        groundImage: "",
-        file: [],
-        saved: false,
-        action: [],
-      };
-
-      cardID += 1;
+      const { data, listId } = action.payload;
+      const newCard = data;
 
       const newState = state.map((list) => {
-        if (list.id === id) {
+        if (list._id === listId) {
           return {
             ...list,
-            task: [...list.task, newTask],
+            cards: [...list.cards, newCard],
           };
         } else {
           return list;
@@ -133,16 +120,16 @@ const reducer = (state = initialState, action) => {
       return newState;
     }
     case boardConstant.DELETE_CARD_SUCCESS: {
-      const { board } = action.payload;
-      return [...board];
+      const { data } = action.payload;
+      return [...data];
     }
     case boardConstant.EDIT_CARD_SUCCESS: {
-      const { board } = action.payload;
-      return [...board];
+      const { data } = action.payload;
+      return [...data];
     }
     case boardConstant.ADD_DESCRIPTION_SUCCESS: {
-      const { board } = action.payload;
-      return [...board];
+      const { data } = action.payload;
+      return [...data];
     }
     case boardConstant.ADD_COMMENT_SUCCESS: {
       const { board } = action.payload;

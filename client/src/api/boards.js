@@ -35,3 +35,13 @@ export const createBoard = (data) => {
   };
   return callApi(config);
 };
+
+export const updateBoard = (boardId, data) => {
+  let config = {
+    method: "put",
+    url: `${BASE_URL}/${PATH}/board/${boardId}`,
+    headers: header,
+    data,
+  };
+  return callApi(config);
+};

@@ -52,19 +52,19 @@
   color: #fff;
 }
 
-.btn-addList {
+/* .btn-addList {
   margin-right: 0.5rem;
   background-color: #5aac44;
   color: #fff;
   border: none;
-  border-radius: 0.3rem;
+  border-radius: 0.2rem;
   cursor: pointer;
 }
 
 .btn-addList:hover {
   background-color: #81c784;
   color: #fff;
-}
+} */
 
 .delete-list {
   cursor: pointer;
@@ -83,14 +83,14 @@
   display: flex;
   justify-content: flex-start;
   width: 100%;
-  padding: 1vh;
+  padding: 10px;
   padding-bottom: 4vh;
 
-  background-color: #f5f5f5;
+  background-color: #eeeeee;
 }
 
 .add-description:hover {
-  background-color: #eeeeee;
+  background-color: #e0e0e0;
   cursor: pointer;
 }
 

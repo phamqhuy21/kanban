@@ -1,17 +1,17 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Board from "../components/Board/Board";
-import { updateDataRequest } from "../redux/actions/board";
 import { cloneDeep } from "lodash";
 import { Draggable } from "react-beautiful-dnd";
-import ListContainer from "./ListContainer";
-import { createList } from "../api/lists";
+import ListTasksContainer from "./ListTasksContainer";
+import { createList, updatePositionCards } from "../api/lists";
 import { useRouteMatch } from "react-router-dom";
 import { message } from "antd";
-import { getBoardDetailReq } from "../redux/actions/boards";
+import { getBoardDetailReq, updateBoardRequest } from "../redux/actions/boards";
+import { updateBoard } from "../api/boards";
 
 function BoardContainer(props) {
-  const detailBoardReducer = useSelector((state) => state.detailBoardReducer);
+  const listTasksReducer = useSelector((state) => state.listTasksReducer);
   const dispatch = useDispatch();
   const match = useRouteMatch();
 
@@ -24,30 +24,48 @@ function BoardContainer(props) {
   };
 
   const reorderSameList = (dataBoard, destination, source) => {
-    let arr = dataBoard.filter((item) => item.id === destination.droppableId);
-    const task = reorder(arr[0].task, source.index, destination.index);
-    const res = { ...arr[0], task };
-    var kanbann = cloneDeep(dataBoard);
-    dataBoard.forEach((e, index) => {
-      if (e.id === res.id) {
-        kanbann[index] = res;
-      }
+    let cloneDataBoard = cloneDeep(dataBoard);
+    // let arr = cloneDataBoard.filter(
+    //   (listTask) => listTask._id === destination.droppableId
+    // );
+    cloneDataBoard = cloneDataBoard.map((list) => {
+      if (list._id === destination.droppableId) {
+        let cards = reorder(list.cards, source.index, destination.index);
+        return { ...list, cards };
+      } else return list;
     });
-    return kanbann;
+    // const cards = reorder(arr[0].cards, source.index, destination.index);
+    // const res = { ...arr[0], cards };
+    // var kanbann = cloneDeep(dataBoard);
+    // dataBoard.forEach((e, index) => {
+    //   if (e.id === res.id) {
+    //     kanbann[index] = res;
+    //   }
+    // });
+    return cloneDataBoard;
   };
 
   const reorderDifferentList = (dataBoard, destination, source) => {
-    let arrSource = dataBoard.filter((item) => item.id === source.droppableId);
-    let arrDestination = dataBoard.filter(
-      (item) => item.id === destination.droppableId
+    let cloneDataBoard = cloneDeep(dataBoard);
+    let arrSource = cloneDataBoard.filter(
+      (listTask) => listTask._id === source.droppableId
     );
-    let arrGet = arrSource[0].task.slice(source.index, source.index + 1);
-    arrSource[0].task.splice(source.index, 1);
-    arrDestination[0].task.splice(destination.index, 0, arrGet[0]);
+    let arrDestination = cloneDataBoard.filter(
+      (listTask) => listTask._id === destination.droppableId
+    );
+    let arrGet = arrSource[0].cards.slice(source.index, source.index + 1);
+    arrSource[0].cards.splice(source.index, 1);
+    arrDestination[0].cards.splice(destination.index, 0, arrGet[0]);
+    return {
+      source: arrSource[0].cards,
+      destination: arrDestination[0].cards,
+      data: cloneDataBoard,
+    };
   };
 
   const onDragEnd = (result, data) => {
     const { destination, source, reason } = result;
+    let boardId = match.params.id;
     if (!destination || reason === "CANCEL") {
       return;
     }
@@ -62,16 +80,78 @@ function BoardContainer(props) {
     switch (destination.droppableId) {
       case "board": {
         const res = reorder(data, source.index, destination.index);
-        dispatch(updateDataRequest(res));
+        let dataReq = res.map((list) => list._id);
+        dispatch(updateBoardRequest(res));
+        updateBoard(boardId, { lists: dataReq })
+          .then((res) => {
+            if (res.status === 200) {
+              message.success("Cập nhật vị trí danh sách thành công");
+            } else message.error("Cập nhật vị trí danh sách thất bại");
+          })
+          .catch((err) => {
+            if (err.response) {
+              message.error(err.response.data.message);
+            } else message.error("Cập nhật vị trí danh sách thất bại");
+          });
         break;
       }
       case source.droppableId: {
-        let dataBoard = reorderSameList(data, destination, source);
-        dispatch(updateDataRequest(dataBoard));
+        let res = reorderSameList(data, destination, source);
+        let listId = destination.droppableId;
+        let dataReq = {
+          boardId,
+          listId,
+          data: {
+            list: {
+              cards: res
+                .filter((list) => list._id === listId)[0]
+                .cards.map((card) => card._id),
+            },
+          },
+        };
+        dispatch(updateBoardRequest(res));
+        updatePositionCards(dataReq)
+          .then((res) => {
+            if (res.status === 200) {
+              message.success("Cập nhật vị trí thẻ nhiệm vụ thành công");
+            } else message.error("Cập nhật vị trí thẻ nhiệm vụ thất bại");
+          })
+          .catch((err) => {
+            if (err.response) {
+              message.error(err.response.data.message);
+            } else message.error("Cập nhật vị trí thẻ nhiệm vụ thất bại");
+          });
         break;
       }
       default: {
-        reorderDifferentList(data, destination, source);
+        let res = reorderDifferentList(data, destination, source);
+        let listSourceId = source.droppableId;
+        let listDestinationId = destination.droppableId;
+        let dataReq = {
+          boardId,
+          listSourceId,
+          listDestinationId,
+          data: {
+            listCardsSource: {
+              cards: res.source.map((card) => card._id),
+            },
+            listCardsDestination: {
+              cards: res.destination.map((card) => card._id),
+            },
+          },
+        };
+        dispatch(updateBoardRequest(res.data));
+        updatePositionCards(dataReq)
+          .then((res) => {
+            if (res.status === 200) {
+              message.success("Cập nhật vị trí thẻ nhiệm vụ thành công");
+            } else message.error("Cập nhật vị trí thẻ nhiệm vụ thất bại");
+          })
+          .catch((err) => {
+            if (err.response) {
+              message.error(err.response.data.message);
+            } else message.error("Cập nhật vị trí thẻ nhiệm vụ thất bại");
+          });
         break;
       }
     }
@@ -85,7 +165,7 @@ function BoardContainer(props) {
             <Draggable key={list._id} draggableId={list._id} index={index}>
               {(provided, snapshot) => {
                 return (
-                  <ListContainer
+                  <ListTasksContainer
                     innerRef={provided.innerRef}
                     provided={provided}
                     snapshot={snapshot}
@@ -119,7 +199,7 @@ function BoardContainer(props) {
   return (
     <React.Fragment>
       <Board
-        detailBoardReducer={detailBoardReducer}
+        listTasksReducer={listTasksReducer}
         onDragEnd={onDragEnd}
         renderBoard={renderBoard}
         handleAddList={handleAddList}

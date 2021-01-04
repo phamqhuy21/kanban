@@ -3,6 +3,7 @@ const Board = db.board;
 const User = db.user;
 const List = db.list;
 const Card = db.card;
+const Label = db.label;
 
 exports.createBoard = (req, res) => {
   const board = new Board({
@@ -23,7 +24,7 @@ exports.createBoard = (req, res) => {
   });
 };
 
-exports.addMemberBoard = (req, res) => {
+exports.updateBoard = async (req, res) => {
   if (!req.body) {
     return res.status(400).send({
       message: "Data to update can not be empty!",
@@ -32,29 +33,50 @@ exports.addMemberBoard = (req, res) => {
 
   const id = req.params.id;
 
-  Board.findByIdAndUpdate(
-    id,
-    {
-      $push: {
-        members: req.memberId,
+  if (req.memberId) {
+    Board.findByIdAndUpdate(
+      id,
+      {
+        $push: {
+          members: req.memberId,
+        },
       },
-    },
-    { new: true, useFindAndModify: false }
-  )
-    .then((data) => {
-      if (!data) {
-        res.status(404).json({
-          message: "Cannot update board",
+      { new: true, useFindAndModify: false }
+    )
+      .then((data) => {
+        if (!data) {
+          res.status(404).json({
+            message: "Cannot update board",
+          });
+          return;
+        } else res.json({ message: "Board updated successfully" });
+      })
+      .catch((err) => {
+        res.status(500).json({
+          message: "Error updating Board",
         });
         return;
-      } else res.json({ message: "Board updated successfully" });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        message: "Error updating Board",
       });
-      return;
-    });
+  } else {
+    Board.findByIdAndUpdate(id, req.body, {
+      new: true,
+      useFindAndModify: false,
+    })
+      .then((data) => {
+        if (!data) {
+          res.status(404).json({
+            message: "Cannot update board",
+          });
+          return;
+        } else res.json({ message: "Board updated successfully" });
+      })
+      .catch((err) => {
+        res.status(500).json({
+          message: "Error updating Board",
+        });
+        return;
+      });
+  }
 };
 
 exports.getDetailBoard = async (req, res) => {
@@ -64,21 +86,28 @@ exports.getDetailBoard = async (req, res) => {
     let creater = await User.findById(board.createdById).lean();
     let members = [];
     let lists = [];
-    let cards = [];
     for (let i = 0; i < board.members.length; i++) {
       let dataMember = await User.findById(board.members[i]);
       members.push({
+        _id: dataMember._id,
         fullname: dataMember.fullname,
         username: dataMember.username,
         email: dataMember.email,
-        alias: dataMember.username.substring(0, 2).toUpperCase(),
+        alias: dataMember.fullname.substring(0, 2).toUpperCase(),
       });
     }
     for (let i = 0; i < board.lists.length; i++) {
       let dataList = await List.findById(board.lists[i]).lean();
       if (dataList.cards.length > 0) {
+        let cards = [];
         for (let j = 0; j < dataList.cards.length; j++) {
+          let labels = [];
           let dataCard = await Card.findById(dataList.cards[j]).lean();
+          for (let k = 0; k < dataCard.labels.length; k++) {
+            let dataLabels = await Label.findById(dataCard.labels[k]).lean();
+            labels.push(dataLabels);
+          }
+          dataCard = { ...dataCard, labels };
           cards.push(dataCard);
         }
         dataList = { ...dataList, cards };
@@ -90,16 +119,18 @@ exports.getDetailBoard = async (req, res) => {
       title: board.title,
       backgroundColor: board.backgroundColor,
       admin: {
+        _id: admin._id,
         fullname: admin.fullname,
         username: admin.username,
         email: admin.email,
-        alias: admin.username.substring(0, 2).toUpperCase(),
+        alias: admin.fullname.substring(0, 2).toUpperCase(),
       },
       createdBy: {
+        _id: creater._id,
         fullname: creater.fullname,
         username: creater.username,
         email: creater.email,
-        alias: creater.username.substring(0, 2).toUpperCase(),
+        alias: creater.fullname.substring(0, 2).toUpperCase(),
       },
       members,
       lists,
@@ -131,4 +162,29 @@ exports.getBoards = async (req, res) => {
       message: "Bad request",
     });
   }
+};
+
+exports.updatePositionList = async (req, res) => {
+  if (!req.body) {
+    return res.status(400).send({
+      message: "Data to update can not be empty!",
+    });
+  }
+
+  const id = req.params.id;
+  Board.findByIdAndUpdate(id, req.body, { new: true, useFindAndModify: false })
+    .then((data) => {
+      if (!data) {
+        res.status(404).json({
+          message: "Cannot update board",
+        });
+        return;
+      } else res.json({ message: "Board updated successfully" });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: "Error updating Board",
+      });
+      return;
+    });
 };

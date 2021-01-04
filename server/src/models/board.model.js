@@ -10,6 +10,8 @@ const Board = mongoose.model(
       title: String,
       backgroundColor: String,
       lists: [],
+      labels: [],
+      actions: [],
     },
     { timestamps: true }
   )

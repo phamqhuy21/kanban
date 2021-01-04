@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card } from "antd";
+import { Card, Col, Row } from "antd";
 import { Input } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
 import Avatar from "antd/lib/avatar/avatar";
@@ -8,20 +8,20 @@ import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 
 MemberForm.propTypes = {
-  card: PropTypes.shape({
-    member: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)),
-  }),
   handleAddMember: PropTypes.func,
 };
 
 function MemberForm(props) {
-  const { card, handleAddMember } = props;
+  const { handleAddMember, card } = props;
   const detailBoardReducer = useSelector((state) => state.detailBoardReducer);
   const [members, setMembers] = useState(detailBoardReducer.members);
 
   const handleSearch = (e) => {
     let fil = detailBoardReducer.members.filter((mem) => {
-      return mem.fullname.search(`${e.target.value}`) >= 0;
+      return (
+        mem.email.search(`${e.target.value}`) >= 0 ||
+        mem.fullname.search(`${e.target.value}`) >= 0
+      );
     });
     setMembers(fil);
   };
@@ -31,35 +31,59 @@ function MemberForm(props) {
       <Input
         placeholder="Nhập tên thành viên ..."
         onChange={handleSearch}
-        style={{ width: 200 }}
+        style={{ width: "100%" }}
       />
       <div style={{ marginTop: "3vh" }}>
         <h4>Thành viên của bảng</h4>
         {members.map((mem, index) => {
           return (
-            <p
+            <Row
               key={index}
               style={{
-                position: "relative",
                 backgroundColor: "#f5f5f5",
-                padding: "1vh 1vw",
+                display: "flex",
+                alignItems: "center",
+                padding: "1vh 0.5vw 1vh 1vw",
+                marginBottom: "7px",
                 cursor: "pointer",
+                width: "100%",
               }}
               onClick={() => {
                 handleAddMember(mem, card);
               }}
             >
-              <Avatar style={{ marginRight: "1vw" }}>{mem.alias}</Avatar>
-              {mem.email}
-              {/* {card.member.length > 0 &&
-              findIndex(card.member, function (o) {
-                return o.alias === mem.alias;
-              }) !== -1 ? (
-                <CheckOutlined
-                  style={{ position: "absolute", top: "1.7vh", right: "0.5vw" }}
-                />
-              ) : null} */}
-            </p>
+              <Col span={4}>
+                <Avatar style={{ marginRight: "1vw" }}>{mem.alias}</Avatar>
+              </Col>
+              <Col span={15} offset={1}>
+                <div>
+                  <p style={{ fontWeight: "500", marginBottom: "0" }}>
+                    {mem.fullname}
+                  </p>
+                  <p
+                    style={{
+                      marginBottom: "0",
+                      fontSize: "0.8rem",
+                      opacity: "0.5",
+                    }}
+                  >
+                    {mem.email}
+                  </p>
+                </div>
+              </Col>
+              <Col span={2} offset={2}>
+                {card.members.length > 0 &&
+                findIndex(card.members, function (memberCardId) {
+                  return memberCardId === mem._id;
+                }) !== -1 ? (
+                  <p style={{ width: "15px" }}>
+                    <CheckOutlined />
+                  </p>
+                ) : (
+                  <p style={{ width: "15px" }}></p>
+                )}
+              </Col>
+            </Row>
           );
         })}
       </div>
