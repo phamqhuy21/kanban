@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import SignIn from "../../components/SignInSignUp/SignIn";
 import SignUnSignUp from "../../components/SignInSignUp/SignUnSignUp";
@@ -9,6 +9,7 @@ import { message } from "antd";
 import NotFound from "../../components/NotFound/NotFound";
 import { useDispatch } from "react-redux";
 import { signInUser } from "../../redux/actions/user";
+import { resetBoard } from "../../redux/actions/boards";
 
 SignInSignUpContainer.propTypes = {};
 
@@ -57,6 +58,11 @@ function SignInSignUpContainer(props) {
         } else message.error("Đăng nhập thất bại!");
       });
   };
+
+  useEffect(() => {
+    localStorage.removeItem("accessToken");
+    dispatch(resetBoard());
+  }, []);
 
   return (
     <React.Fragment>

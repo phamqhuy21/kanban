@@ -4,40 +4,45 @@
 
 #scroll-board::-webkit-scrollbar-track {
   border-radius: 5px;
-  background: #66bb6a;
+  background: hsla(0, 0%, 100%, 0.24);
 }
 
 #scroll-board::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background-color: #c8e6c9;
+  background-color: hsla(0, 0%, 100%, 0.4);
 }
 
 #scroll-board::-webkit-scrollbar-thumb:hover {
-  background: #43a047;
+  background: hsla(0, 0%, 100%, 0.6);
 }
 
-.list-kanban .ant-spin-nested-loading {
-  padding-right: 0.5vw;
+.list-kanban {
+  padding-right: 10px;
   max-height: 60vh;
-  overflow: auto;
+  min-height: 5vh;
+  overflow: hidden;
 }
 
-.list-kanban .ant-spin-nested-loading::-webkit-scrollbar {
+.list-kanban:hover {
+  overflow-y: auto;
+}
+
+.list-kanban::-webkit-scrollbar {
   width: 0.7vw;
 }
 
-.list-kanban .ant-spin-nested-loading::-webkit-scrollbar-track {
+.list-kanban::-webkit-scrollbar-track {
   border-radius: 5px;
   background: #9e9e9e;
 }
 
-.list-kanban .ant-spin-nested-loading::-webkit-scrollbar-thumb {
+.list-kanban::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background-color: #c8e6c9;
+  background-color: hsla(0, 0%, 100%, 0.4);
 }
 
-.list-kanban .ant-spin-nested-loading::-webkit-scrollbar-thumb:hover {
-  background: #eeeeee;
+.list-kanban::-webkit-scrollbar-thumb:hover {
+  background: hsla(0, 0%, 100%, 0.6);
 }
 
 .btn-open-addList {

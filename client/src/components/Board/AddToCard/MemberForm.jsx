@@ -27,7 +27,12 @@ function MemberForm(props) {
   };
 
   return (
-    <Card title={<h3>Thành viên</h3>} size="small" bordered={false}>
+    <Card
+      title={<h3>Thành viên</h3>}
+      size="small"
+      style={{ boxShadow: "0 0 2px 2px rgba(0,0,0,0.2)" }}
+      bordered={false}
+    >
       <Input
         placeholder="Nhập tên thành viên ..."
         onChange={handleSearch}
@@ -73,8 +78,8 @@ function MemberForm(props) {
               </Col>
               <Col span={2} offset={2}>
                 {card.members.length > 0 &&
-                findIndex(card.members, function (memberCardId) {
-                  return memberCardId === mem._id;
+                findIndex(card.members, function (memberCard) {
+                  return memberCard._id === mem._id;
                 }) !== -1 ? (
                   <p style={{ width: "15px" }}>
                     <CheckOutlined />

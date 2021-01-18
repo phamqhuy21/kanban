@@ -11,9 +11,10 @@ const Card = mongoose.model(
       members: [],
       background: String,
       files: [],
-      comment: [],
+      comments: [],
       actions: [],
       deadline: Date,
+      timer: Number,
     },
     { timestamps: true }
   )

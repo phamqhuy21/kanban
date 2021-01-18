@@ -12,6 +12,7 @@ const Board = mongoose.model(
       lists: [],
       labels: [],
       actions: [],
+      done: Boolean,
     },
     { timestamps: true }
   )

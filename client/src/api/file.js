@@ -1,14 +1,19 @@
 import { BASE_URL, PATH } from "../const/api";
 import callApi from "../utils/apiCaller";
 
-const accessToken = localStorage.getItem("accessToken");
+// const accessToken = localStorage.getItem("accessToken");
 
-const header = {
-  "x-access-token": accessToken,
-  "Content-Type": "application/json",
-};
+// const header = {
+//   "x-access-token": accessToken,
+//   "Content-Type": "application/json",
+// };
 
 export const uploadFile = (cardId, boardId, fileObj) => {
+  const accessToken = localStorage.getItem("accessToken");
+  const header = {
+    "x-access-token": accessToken,
+    "Content-Type": "application/json",
+  };
   let data = new FormData();
   data.append("upload", fileObj);
   let config = {
@@ -22,6 +27,11 @@ export const uploadFile = (cardId, boardId, fileObj) => {
 };
 
 export const uploadImage = (cardId, boardId, fileObj) => {
+  const accessToken = localStorage.getItem("accessToken");
+  const header = {
+    "x-access-token": accessToken,
+    "Content-Type": "application/json",
+  };
   let data = new FormData();
   data.append("upload", fileObj);
   let config = {

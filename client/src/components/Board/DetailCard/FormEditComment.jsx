@@ -2,23 +2,14 @@ import React, { useEffect } from "react";
 import { Form, Input, Button } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 
-import { useDispatch } from "react-redux";
-import { editCommentRequest } from "../../../redux/actions/board";
-
 function FormEditComment(props) {
-  const { setVisibleEdit, comment, card } = props;
+  const { setVisibleEdit, comment, handleUpdateComment, card } = props;
   const [formEdit] = Form.useForm();
-  const dispatch = useDispatch();
 
   const handleClick = () => {
-    const date = new Date().valueOf();
+    // const date = new Date().valueOf();
     formEdit.validateFields().then((value) => {
-      dispatch(
-        editCommentRequest(card.id, comment.time, {
-          content: value.comment,
-          time: date,
-        })
-      );
+      handleUpdateComment(value.comment, comment, card);
     });
     setVisibleEdit(false);
   };
@@ -27,12 +18,20 @@ function FormEditComment(props) {
     formEdit.setFieldsValue({
       comment: comment.content,
     });
-  });
+  }, [comment.content]);
 
   return (
-    <Form form={formEdit} name="basic">
+    <Form
+      form={formEdit}
+      name="basic"
+      onKeyPress={(event) => {
+        if (event.key === "Enter") {
+          handleClick();
+        }
+      }}
+    >
       <Form.Item style={{ marginBottom: "0.7rem" }} name="comment">
-        <Input />
+        <Input.TextArea placeholder="Chỉnh sửa bình luận" rows={2} />
       </Form.Item>
       <Form.Item>
         <Button

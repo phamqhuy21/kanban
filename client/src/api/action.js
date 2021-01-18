@@ -1,14 +1,19 @@
 import { BASE_URL, PATH } from "../const/api";
 import callApi from "../utils/apiCaller";
 
-const accessToken = localStorage.getItem("accessToken");
+// const accessToken = localStorage.getItem("accessToken");
 
-const header = {
-  "x-access-token": accessToken,
-  "Content-Type": "application/json",
-};
+// const header = {
+//   "x-access-token": accessToken,
+//   "Content-Type": "application/json",
+// };
 
 export const createAction = (data) => {
+  const accessToken = localStorage.getItem("accessToken");
+  const header = {
+    "x-access-token": accessToken,
+    "Content-Type": "application/json",
+  };
   let config = {
     method: "post",
     url: `${BASE_URL}/${PATH}/action`,

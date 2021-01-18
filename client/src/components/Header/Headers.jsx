@@ -1,7 +1,18 @@
 import React from "react";
-import { Button } from "antd";
+import { Badge, Button, Dropdown, Popover } from "antd";
 import "./Header.css";
 import Avatar from "antd/lib/avatar/avatar";
+import ActionBoard from "./ActionBoard";
+import ActionBoardContainer from "../../containers/Header/ActionBoardContainer";
+import {
+  CheckOutlined,
+  CloseCircleOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
+import AddMemberContainer from "../../containers/Header/AddMemberContainer";
+import TitleBoardContainer from "../../containers/Header/TitleBoardContainer";
+import MemberContainer from "../../containers/Header/MemberContainer";
+import StatusBoardContainer from "../../containers/Header/StatusBoardContainer";
 
 function Headers(props) {
   const { board } = props;
@@ -22,17 +33,7 @@ function Headers(props) {
           color: "#fff",
         }}
       >
-        <h1
-          className="title-detail-board"
-          style={{
-            color: "#fff",
-            marginBottom: 0,
-            padding: "5px 10px",
-            borderRadius: "3px",
-          }}
-        >
-          {board.title}
-        </h1>
+        <TitleBoardContainer board={board} />
         <p
           style={{
             marginBottom: 0,
@@ -44,35 +45,27 @@ function Headers(props) {
         >
           {board.members.length === 1 ? "Cá nhân" : "Nhóm"}
         </p>
-        {board.members.map((member, index) => (
-          <Avatar
-            icon={<p>{member.alias}</p>}
-            key={index}
-            style={{ marginLeft: "10px", color: "#424242", fontWeight: "500" }}
-          />
-        ))}
-        <Button
-          style={{
-            marginLeft: "10px",
-            backgroundColor: "hsla(0,0%,100%,0.24)",
-            border: "none",
-          }}
-          type="primary"
-        >
-          Thêm thành viên
-        </Button>
+        <MemberContainer />
+        <AddMemberContainer />
       </div>
       <div>
-        <Button
-          style={{
-            marginLeft: "10px",
-            backgroundColor: "hsla(0,0%,100%,0.24)",
-            border: "none",
-          }}
-          type="primary"
+        <StatusBoardContainer />
+        <Popover
+          content={<ActionBoardContainer />}
+          trigger="click"
+          placement="bottomRight"
         >
-          Hoạt động
-        </Button>
+          <Button
+            style={{
+              marginLeft: "10px",
+              backgroundColor: "hsla(0,0%,100%,0.24)",
+              border: "none",
+            }}
+            type="primary"
+          >
+            Hoạt động
+          </Button>
+        </Popover>
       </div>
     </div>
   );

@@ -1,7 +1,6 @@
 import { combineReducers } from "redux";
 import listTasksReducer from "./listTasks";
 import boardsReducer from "./boards";
-import user from "./user";
 import modalReducer from "./modalDetailCard";
 import statusCardReducer from "./statusCard";
 import usersReducer from "./users";
@@ -13,7 +12,6 @@ const rootReducer = combineReducers({
   listTasksReducer: listTasksReducer,
   cardTaskReducer,
   boardsReducer,
-  user: user,
   labelsReducer,
   statusCard: statusCardReducer,
   usersReducer,

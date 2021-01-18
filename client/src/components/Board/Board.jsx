@@ -16,7 +16,7 @@ Board.propTypes = {
 
 const style = {
   boardCoverStyle: {
-    height: "100vh",
+    height: "90vh",
   },
   coverAddList: {
     flex: "0 0 auto",

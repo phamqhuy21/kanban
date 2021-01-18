@@ -1,0 +1,6 @@
+.duplicate-card
+  > .ant-card-head
+  > .ant-card-head-wrapper
+  > .ant-card-head-title {
+  padding-bottom: 0;
+}

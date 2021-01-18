@@ -13,6 +13,9 @@ const reducer = (state = initialState, action) => {
       let newState = cloneDeep(action.payload.data);
       return newState;
     }
+    case boardsConst.RESET_BOARD: {
+      return [];
+    }
     default:
       return state;
   }

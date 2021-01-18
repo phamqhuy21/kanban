@@ -14,6 +14,7 @@ ExpirationDate.propTypes = {
 const style = {
   coverExpirationDateStyle: { marginLeft: "2vw" },
   btnCheckSuccsessStyle: {
+    padding: "1vh 0.5vw",
     backgroundColor: "#eeeeee",
     color: "#212121",
     border: "none",
@@ -28,46 +29,46 @@ const style = {
 
 function ExpirationDate(props) {
   const { card, handleCheckSuccess } = props;
-  const timer = card.exDate.date - new Date().valueOf();
+  const timer =
+    moment(card.deadline).valueOf() - new Date().valueOf() || undefined;
 
   return (
     <div style={style.coverExpirationDateStyle}>
-      <h4>NGÀY HẾT HẠN</h4>
+      <h5 style={{ color: "#757575", marginBottom: 0 }}>NGÀY HẾT HẠN</h5>
       <div style={{ display: "flex" }}>
-        <Checkbox onChange={handleCheckSuccess}>
-          <Button
-            type="primary"
-            style={style.btnCheckSuccsessStyle}
-            onClick={() => {
-              console.log("click");
-            }}
-          >
-            <span>
-              {moment(card.exDate.date).format("MMMM Do YYYY, h:mm:ss a")}
-            </span>
-            {card.exDate.successed ? (
-              <span style={style.labelStatusStyle}>HOÀN TẤT</span>
-            ) : timer < card.exDate.timer && timer > 0 ? (
-              <span
-                style={{
-                  ...style.labelStatusStyle,
-                  backgroundColor: "	#ffcc00",
-                }}
-              >
-                GẦN ĐẾN HẠN
-              </span>
-            ) : timer <= 0 ? (
-              <span
-                style={{
-                  ...style.labelStatusStyle,
-                  backgroundColor: "#f44336",
-                }}
-              >
-                Quá hạn
-              </span>
-            ) : null}
-          </Button>
-        </Checkbox>
+        {/* <Checkbox onChange={handleCheckSuccess}> */}
+        <div
+          style={style.btnCheckSuccsessStyle}
+          onClick={() => {
+            console.log("click");
+          }}
+        >
+          <span>{moment(card.deadline).format("MMMM Do YYYY, h:mm:ss a")}</span>
+          {timer ? (
+            <React.Fragment>
+              {timer < card.timer && timer > 0 ? (
+                <span
+                  style={{
+                    ...style.labelStatusStyle,
+                    backgroundColor: "#ffa726",
+                  }}
+                >
+                  GẦN ĐẾN HẠN
+                </span>
+              ) : timer <= 0 ? (
+                <span
+                  style={{
+                    ...style.labelStatusStyle,
+                    backgroundColor: "#ef5350",
+                  }}
+                >
+                  QUÁ HẠN
+                </span>
+              ) : null}
+            </React.Fragment>
+          ) : null}
+        </div>
+        {/* </Checkbox> */}
       </div>
     </div>
   );

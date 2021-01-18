@@ -13,6 +13,7 @@ import {
   deleteMemberRequest,
 } from "../../redux/actions/board";
 import { getBoardDetailReq } from "../../redux/actions/boards";
+import { createAction } from "../../api/action";
 
 MemberFormContainer.propTypes = {};
 
@@ -37,7 +38,7 @@ function MemberFormContainer(props) {
     let cardId = card._id;
     let members = cloneDeep(card.members);
     let index = await members.findIndex((member) => {
-      return member === mem._id;
+      return member._id === mem._id;
     });
     if (index === -1) {
       await members.push(mem._id);
@@ -55,13 +56,38 @@ function MemberFormContainer(props) {
     updateCardTask(dataReq)
       .then((res) => {
         if (res.status === 200) {
-          message.success("Thêm thành viên vào thẻ thành công");
+          message.success("Cập nhật thành viên thẻ thành công");
           dispatch(getBoardDetailReq(boardId));
           dispatch(getDataCardReq(boardId, cardId));
-        } else message.error("Thêm thành viên vào thẻ thất bại");
+          if (index === -1) {
+            createAction({
+              boardId,
+              cardId,
+              data: {
+                action: `thêm thành viên ${mem.fullname}`,
+              },
+            }).then((res) => {
+              if (res.status === 200) {
+                dispatch(getBoardDetailReq(boardId));
+              }
+            });
+          } else {
+            createAction({
+              boardId,
+              cardId,
+              data: {
+                action: `bỏ thành viên ${mem.fullname}`,
+              },
+            }).then((res) => {
+              if (res.status === 200) {
+                dispatch(getBoardDetailReq(boardId));
+              }
+            });
+          }
+        } else message.error("Cập nhật thành viên thẻ thất bại");
       })
       .catch((err) => {
-        message.error("Thêm thành viên vào thẻ thất bại");
+        message.error("Cập nhật thành viên thẻ thất bại");
       });
     // if (
     //   findIndex(card.members, function (member) {

@@ -3,6 +3,9 @@ import { Upload, Card, Button, message } from "antd";
 import PropTypes from "prop-types";
 import { uploadImage } from "../../../api/file";
 import { useRouteMatch } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { getBoardDetailReq } from "../../../redux/actions/boards";
+import { getDataCardReq } from "../../../redux/actions/cardTask";
 
 UploadImageForm.propTypes = {
   card: PropTypes.shape({
@@ -14,7 +17,9 @@ UploadImageForm.propTypes = {
 
 function UploadImageForm(props) {
   const { card, handlePreviewImg, handleDeleteGround } = props;
+  const dispatch = useDispatch();
   const match = useRouteMatch();
+
   const handleChange = (info) => {
     let boardId = match.params.id;
     let cardId = card._id;
@@ -25,6 +30,8 @@ function UploadImageForm(props) {
         .then((res) => {
           if (res.status === 200) {
             message.success("Cập nhật ảnh bìa thành công");
+            dispatch(getBoardDetailReq(boardId));
+            dispatch(getDataCardReq(boardId, cardId));
           } else message.error("Cập nhật ảnh bìa thất bại");
         })
         .catch((err) => {

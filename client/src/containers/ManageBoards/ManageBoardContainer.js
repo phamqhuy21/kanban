@@ -10,6 +10,7 @@ import GlobalMenuContainer from "../GlobalMenu/GlobalMenuContainer";
 import CreateBoardContainer from "./CreateBoardContainer";
 import { getUserReq } from "../../redux/actions/user";
 import { createBoard } from "../../api/boards";
+import jwt_decode from "jwt-decode";
 
 ManageBoardContainer.propTypes = {};
 
@@ -21,6 +22,7 @@ const { Content } = Layout;
 
 function ManageBoardContainer(props) {
   const [openFormCreate, setOpenFormCreate] = useState(false);
+  const [typeBoard, setTypeBoard] = useState("progress");
   const dispatch = useDispatch();
   const boardsReducer = useSelector((state) => state.boardsReducer);
 
@@ -48,13 +50,31 @@ function ManageBoardContainer(props) {
       });
   };
 
+  const handleSelectTypeBoard = (type) => {
+    setTypeBoard(type);
+  };
+
   useEffect(() => {
-    dispatch(getUserReq());
-    dispatch(getBoardsReq());
+    if (
+      localStorage.getItem("accessToken") &&
+      Date.now() <
+        jwt_decode(localStorage.getItem("accessToken")).exp * 1000 - 60000
+    ) {
+      dispatch(getUserReq());
+      dispatch(getBoardsReq());
+    }
   }, [dispatch]);
 
   if (!localStorage.getItem("accessToken")) {
     return <Redirect to="/signIn" />;
+  } else {
+    if (
+      Date.now() >=
+      jwt_decode(localStorage.getItem("accessToken")).exp * 1000 - 60000
+    ) {
+      localStorage.removeItem("accessToken");
+      return <Redirect to="/signIn" />;
+    }
   }
 
   return (
@@ -63,11 +83,17 @@ function ManageBoardContainer(props) {
       <Content style={style.contentStyle}>
         <div style={{ padding: "2vh 15vw" }}>
           <Row>
-            <Col span={7}>
-              <SiderManageBoards />
+            <Col
+              span={7}
+              style={{ borderRight: "2px solid #e0e0e0", paddingRight: "30px" }}
+            >
+              <SiderManageBoards
+                handleSelectTypeBoard={handleSelectTypeBoard}
+              />
             </Col>
-            <Col span={16} offset={1}>
+            <Col span={17} style={{ paddingLeft: "30px" }}>
               <ContentManageBoards
+                typeBoard={typeBoard}
                 boards={boardsReducer}
                 openFormCreate={openFormCreate}
                 handleOpenFormCreate={handleOpenFormCreate}

@@ -10,13 +10,18 @@ SignUnSignUp.propTypes = {
 };
 
 const style = {
-  coverStyle: { textAlign: "center", background: "#fff" },
+  coverStyle: {
+    textAlign: "center",
+    paddingTop: "10vh",
+    background: "#fff",
+    minHeight: "100vh",
+  },
   coverCardStyle: { display: "flex", flex: "auto", justifyContent: "center" },
   bodyCard: { width: "350px", boxShadow: "5px 10px 5px 5px #888888" },
-  coverLottieStyle: { position: "fixed", bottom: 0 },
+  coverLottieStyle: { position: "fixed" },
   lottieStyle: {
-    width: "500px",
-    height: "250px",
+    width: "35vw",
+    height: "35vh",
   },
 };
 
@@ -27,13 +32,13 @@ function SignUnSignUp(props) {
   const { path } = match;
   return (
     <div style={style.coverStyle}>
-      <h1>Trello</h1>
+      <h1 style={{ fontWeight: "bold" }}>Quản lý công việc</h1>
       <div style={style.coverCardStyle}>
         <Card bodyStyle={style.bodyCard}>
           {path === "/signIn" ? (
-            <p>Đăng nhập vào trello</p>
+            <p style={{ fontWeight: "bold" }}>Đăng nhập vào hệ thống</p>
           ) : (
-            <p>Đăng ký tài khoản của bạn</p>
+            <p style={{ fontWeight: "bold" }}>Đăng ký tài khoản của bạn</p>
           )}
           <Form
             form={form}
@@ -60,7 +65,25 @@ function SignUnSignUp(props) {
           )}
         </Card>
       </div>
-      <div style={{ ...style.coverLottieStyle, left: 0 }}>
+      {/* <div style={{ ...style.coverLottieStyle, right: 0, top: 0 }}>
+        <Lottie
+          loop
+          animationData={require(`../../assets/json/kanban3.json`)}
+          play
+          speed={1}
+          style={style.lottieStyle}
+        />
+      </div> */}
+      {/* <div style={{ ...style.coverLottieStyle, left: 0, bottom: 0 }}>
+        <Lottie
+          loop
+          animationData={require(`../../assets/json/kanban4.json`)}
+          play
+          speed={1}
+          style={style.lottieStyle}
+        />
+      </div> */}
+      <div style={{ ...style.coverLottieStyle, left: 0, bottom: 0 }}>
         <Lottie
           loop
           animationData={require(`../../assets/json/kanban1.json`)}
@@ -69,7 +92,7 @@ function SignUnSignUp(props) {
           style={style.lottieStyle}
         />
       </div>
-      <div style={{ ...style.coverLottieStyle, right: 0 }}>
+      <div style={{ ...style.coverLottieStyle, right: 0, bottom: 0 }}>
         <Lottie
           loop
           animationData={require(`../../assets/json/kanban2.json`)}

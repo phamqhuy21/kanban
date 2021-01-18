@@ -6,7 +6,7 @@ import { Layout } from "antd";
 import { useSelector } from "react-redux";
 
 const style = {
-  coverStyle: { height: "100vh" },
+  coverStyle: { minHeight: "100vh" },
 };
 
 function App() {
@@ -29,11 +29,14 @@ function App() {
   };
 
   return (
-    <div style={style.coverStyle}>
-      <Layout style={{ backgroundColor: detailBoardReducer?.backgroundColor }}>
-        <Router>{showBody(routes)}</Router>
-      </Layout>
-    </div>
+    <Layout
+      style={{
+        ...style.coverStyle,
+        backgroundColor: detailBoardReducer?.backgroundColor,
+      }}
+    >
+      <Router>{showBody(routes)}</Router>
+    </Layout>
   );
 }
 

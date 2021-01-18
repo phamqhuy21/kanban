@@ -1,8 +1,18 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Draggable } from "react-beautiful-dnd";
-import { Card } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, Card, Col, Image, Row } from "antd";
+import {
+  AlignLeftOutlined,
+  ClockCircleOutlined,
+  CommentOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  PaperClipOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import moment from "moment";
+import "./CardTask.css";
 
 CardTask.propTypes = {
   card: PropTypes.shape({
@@ -57,91 +67,149 @@ function CardTask(props) {
                 style={getStyle(provided.draggableProps.style, snapshot)}
               >
                 <Card
+                  className="card-task"
                   headStyle={{
-                    padding: "0 0.4rem",
+                    padding: 0,
                     fontSize: "0.8rem",
                     fontWeight: "initial",
+                    border: "none",
                   }}
                   style={{
                     margin: "0.5rem 0",
                     backgroundColor: "white",
                     borderRadius: "0.2rem",
                     boxShadow: "0 1px 0 rgba(9,30,66,.25)",
+                    color: "#616161",
                   }}
-                  bodyStyle={{
-                    padding: "0",
-                  }}
+                  //   bodyStyle={{
+                  //     padding: "0",
+                  //   }}
                   size="small"
                   hoverable={true}
                   title={
-                    <div>
-                      {/* {card.groundImage.length > 0 ? (
-                        <div
-                          style={{
-                            backgroundColor: "#bdbdbd",
-                            textAlign: "center",
-                          }}
-                        >
-                          <Image
-                            src={card.groundImage}
-                          />
-                        </div>
-                      ) : null} */}
-                      {card.labels.length > 0 ? (
-                        <div style={{ display: "flex" }}>
-                          {card.labels.map((label, index) => {
-                            return (
-                              <div
-                                key={index}
-                                style={{
-                                  width: "18%",
-                                  height: "1vh",
-                                  marginRight: "0.2vw",
-                                  backgroundColor: label.color,
-                                  borderRadius: "5px",
-                                }}
-                              />
-                            );
-                          })}
-                        </div>
-                      ) : null}
+                    card.background.length > 0 ? (
                       <div
-                        style={{ paddingTop: "0.5vh" }}
+                        style={{
+                          backgroundImage: `url(${card.background})`,
+                          textAlign: "center",
+                        }}
                         onClick={() => {
                           handleOpenDetailCard(card);
                         }}
                       >
-                        {card.title}
+                        <Image src={card.background} preview={false} />
                       </div>
-                      {extra ? (
-                        <div
+                    ) : null
+                  }
+                  onMouseEnter={() => setExtra(true)}
+                  onMouseLeave={() => setExtra(false)}
+                >
+                  <div>
+                    {card.labels.length > 0 ? (
+                      <Row style={{ width: "90%" }}>
+                        {card.labels.map((label, index) => {
+                          return (
+                            <Col key={index}>
+                              <div
+                                style={{
+                                  minWidth: "50px",
+                                  minHeight: "1vh",
+                                  margin: "0.2vh 0.1vw",
+                                  backgroundColor: label.color,
+                                  borderRadius: "5px",
+                                }}
+                              />
+                            </Col>
+                          );
+                        })}
+                      </Row>
+                    ) : null}
+                    <div
+                      onClick={() => {
+                        handleOpenDetailCard(card);
+                      }}
+                    >
+                      <div style={{ paddingTop: "0.5vh" }}>{card.title}</div>
+                      <Row>
+                        {card.deadline ? (
+                          <Col span={11}>
+                            <ClockCircleOutlined
+                              style={{ marginRight: "5px" }}
+                            />
+                            <span>
+                              {moment(card.deadline).format("MMM Do YY")}
+                            </span>
+                          </Col>
+                        ) : null}
+                        {card.description.length > 0 ? (
+                          <Col span={2}>
+                            <AlignLeftOutlined />
+                          </Col>
+                        ) : null}
+                        {card.comments.length > 0 ? (
+                          <Col span={4}>
+                            <CommentOutlined style={{ marginRight: "5px" }} />
+                            <span>{card.comments.length}</span>
+                          </Col>
+                        ) : null}
+                        {card.files.length > 0 ? (
+                          <Col span={4}>
+                            <PaperClipOutlined style={{ marginRight: "5px" }} />
+                            <span>{card.files.length}</span>
+                          </Col>
+                        ) : null}
+                        {card.members.length > 0 ? (
+                          <Col span={3}>
+                            <UserOutlined style={{ marginRight: "5px" }} />
+                            <span>{card.members.length}</span>
+                          </Col>
+                        ) : null}
+                      </Row>
+                    </div>
+                    {extra ? (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "3px",
+                          right: "3px",
+                          display: "flex",
+                        }}
+                      >
+                        <Button
                           style={{
-                            position: "absolute",
-                            top: "1.5vh",
-                            right: "0.5vw",
+                            backgroundColor: "rgba(0,0,0,0.3)",
+                            padding: "0 0.5vw",
+                            marginRight: "3px",
+                            border: "none",
+                            color: "#212121",
                           }}
                         >
                           <EditOutlined
                             style={{
-                              marginRight: "0.5rem",
                               cursor: "pointer",
                             }}
                             onClick={onEditCard}
                           />
+                        </Button>
+                        <Button
+                          style={{
+                            backgroundColor: "rgba(0,0,0,0.3)",
+                            padding: "0 0.5vw",
+                            border: "none",
+                            color: "#212121",
+                          }}
+                        >
                           <DeleteOutlined
                             style={{
                               cursor: "pointer",
                             }}
                             onClick={onDeleteCard}
                           />
-                        </div>
-                      ) : null}
-                      {/*  {Object.keys(card.exDate).length > 0 ? (<div><ClockCircleOutlined /></div>):null} */}
-                    </div>
-                  }
-                  onMouseEnter={() => setExtra(true)}
-                  onMouseLeave={() => setExtra(false)}
-                ></Card>
+                        </Button>
+                      </div>
+                    ) : null}
+                  </div>
+                </Card>
               </div>
             </div>
           );

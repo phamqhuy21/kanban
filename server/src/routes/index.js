@@ -7,4 +7,5 @@ module.exports = (app) => {
   require("./label.routes")(app);
   require("./file.routes")(app);
   require("./action.routes")(app);
+  require("./comment.routes")(app);
 };

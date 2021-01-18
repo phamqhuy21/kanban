@@ -8,13 +8,11 @@ import {
   PaperClipOutlined,
   PictureOutlined,
 } from "@ant-design/icons";
-import LabelForm from "./LabelForm";
 import UploadImageForm from "./UploadImageForm";
 import UploadFileForm from "./UploadFileForm";
-import ExpirationDateForm from "./ExpirationDateForm";
-import MemberForm from "./MemberForm";
 import ManageLabel from "../../../containers/DetailCard/ManageLabel";
 import MemberFormContainer from "../../../containers/AddToCard/MemberFormContainer";
+import DeadlineFormContainer from "../../../containers/AddToCard/DeadlineFormContainer";
 
 AddToCard.propTypes = {
   card: PropTypes.object,
@@ -40,7 +38,6 @@ function AddToCard(props) {
   const {
     card,
     selectLabel,
-    handleSaveExDate,
     handleDeleteExDate,
     handlePreviewFile,
     handlePreviewImg,
@@ -55,9 +52,8 @@ function AddToCard(props) {
         <ManageLabel />
         <Dropdown
           overlay={
-            <ExpirationDateForm
+            <DeadlineFormContainer
               card={card}
-              handleSaveExDate={handleSaveExDate}
               handleDeleteExDate={handleDeleteExDate}
             />
           }

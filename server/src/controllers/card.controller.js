@@ -1,53 +1,81 @@
 const db = require("../models");
+const Action = require("../models/action.model");
 const List = db.list;
 const Card = db.card;
 const File = db.file;
 const Label = db.label;
 const User = db.user;
+const Comment = db.comment;
+const ACtion = db.action;
 
 exports.createCard = async (req, res) => {
-  const listId = req.body.listId;
-  const card = await new Card({
-    createdById: req.userId,
-    title: req.body.data.title || "",
-    description: req.body.data.description || "",
-    background: req.body.data.background || "",
-    deadline: req.body.data.deadline || null,
-  });
-  await card.save((err, card) => {
-    if (err) {
-      res.status(500).json({ message: err });
-      return;
-    }
-    if (card) {
-      return;
-    }
-  });
-  await List.findByIdAndUpdate(
-    listId,
-    {
-      $push: {
-        cards: card._id.toString(),
-      },
-    },
-    { new: true, useFindAndModify: false }
-  )
-    .then((data) => {
-      if (!data) {
-        res.status(404).send({
-          message: "Cannot update List",
-        });
+  try {
+    const listId = req.body.listId;
+    const card = await new Card({
+      createdById: req.userId,
+      title: req.body.data.title || "",
+      description: req.body.data.description || "",
+      background: req.body.data.background || "",
+      deadline: req.body.data.deadline || null,
+      ...req.body.data,
+    });
+    await card.save((err, card) => {
+      if (err) {
+        res.status(500).json({ message: err });
         return;
-      } else
-        res.status(200).json({
+      }
+      if (card) {
+        return;
+      }
+    });
+    if (typeof req.body.position !== undefined) {
+      let listFilter = await List.findById(listId).lean();
+      let newCards = listFilter.cards;
+      await newCards.splice(req.body.position, 0, card._id.toString());
+      let list = await List.findByIdAndUpdate(
+        listId,
+        {
+          cards: newCards,
+        },
+        { new: true, useFindAndModify: false }
+      ).lean();
+      if (list) {
+        return res.status(200).json({
           code: 200,
           message: "Add card and update list successfully",
           data: card,
         });
-    })
-    .catch((err) => {
-      return res.status(500).send({ message: err });
+      } else
+        return res.status(400).json({
+          message: "bad request",
+        });
+    } else {
+      console.log("huhu");
+      let list = await List.findByIdAndUpdate(
+        listId,
+        {
+          $push: {
+            cards: card._id.toString(),
+          },
+        },
+        { new: true, useFindAndModify: false }
+      ).lean();
+      if (list) {
+        return res.status(200).json({
+          code: 200,
+          message: "Add card and update list successfully",
+          data: card,
+        });
+      } else
+        return res.status(400).json({
+          message: "bad request",
+        });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: error,
     });
+  }
 };
 
 exports.updateCard = async (req, res) => {
@@ -115,6 +143,8 @@ exports.getDetailCard = async (req, res) => {
       let members = [];
       let files = [];
       let labels = [];
+      let comments = [];
+      let actions = [];
       let background = "";
       for (let i = 0; i < card.members.length; i++) {
         let dataMember = await User.findById(card.members[i]).lean();
@@ -127,14 +157,23 @@ exports.getDetailCard = async (req, res) => {
         let dataFile = await File.findById(card.files[i]).lean();
         files.push(dataFile);
       }
+      for (let i = 0; i < card.comments.length; i++) {
+        let dataComment = await Comment.findById(card.comments[i]).lean();
+        comments.push(dataComment);
+      }
       for (let i = 0; i < card.labels.length; i++) {
         let dataLabel = await Label.findById(card.labels[i]).lean();
         labels.push(dataLabel);
       }
+      for (let i = 0; i < card.actions.length; i++) {
+        let dataAction = await Action.findById(card.actions[i]).lean();
+        let userAction = await User.findById(dataAction.createdById).lean();
+        actions.push({ ...dataAction, createdById: userAction });
+      }
       if (card.background.length > 0) {
         background = await File.findById(card.background).lean();
       }
-      card = { ...card, members, files, labels, background };
+      card = { ...card, members, files, labels, background, comments, actions };
 
       return res.status(200).json({
         message: "get card task successfully",

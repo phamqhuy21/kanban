@@ -5,16 +5,18 @@ import BoardContainer from "./BoardContainer";
 import GlobalMenuContainer from "./GlobalMenu/GlobalMenuContainer";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouteMatch } from "react-router-dom";
-import { getBoardDetailReq } from "../redux/actions/boards";
+import { getBoardDetailReq, getBoardsReq } from "../redux/actions/boards";
 import HeaderContainer from "./Header/HeaderContainer";
 
 function KanBan(props) {
   const dispatch = useDispatch();
   const detailBoardReducer = useSelector((state) => state.detailBoardReducer);
   const match = useRouteMatch();
+
   useEffect(() => {
     dispatch(getBoardDetailReq(match.params.id));
-  }, []);
+    dispatch(getBoardsReq());
+  }, [match.params.id, dispatch]);
 
   return (
     <React.Fragment>
@@ -22,7 +24,10 @@ function KanBan(props) {
       {Object.keys(detailBoardReducer).length > 0 ? (
         <Content>
           <Layout
-            style={{ backgroundColor: detailBoardReducer.backgroundColor }}
+            style={{
+              backgroundColor: detailBoardReducer.backgroundColor,
+              maxHeight: "100%",
+            }}
           >
             <HeaderContainer />
             <Content>

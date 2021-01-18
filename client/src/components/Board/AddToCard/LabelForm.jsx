@@ -47,12 +47,13 @@ function LabelForm(props) {
 
   useEffect(() => {
     setStateLabel(labels);
-  }, []);
+  }, [labels]);
 
   return (
     <Card
       size="small"
       title={<div style={{ textAlign: "center" }}>Nhãn</div>}
+      style={{ boxShadow: "0 0 2px 2px rgba(0,0,0,0.2)" }}
       bordered={false}
       //   bodyStyle={{ padding: "0" }}
       //   headStyle={{ padding: "0" }}

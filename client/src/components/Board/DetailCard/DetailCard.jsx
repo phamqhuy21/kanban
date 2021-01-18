@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Modal, Layout, Image } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
 
 DetailCard.propTypes = {
   stateCard: PropTypes.shape({
@@ -29,21 +30,32 @@ const style = {
 function DetailCard(props) {
   const { stateCard, visible, handleCancel, children } = props;
 
-  console.log(stateCard);
-
   return (
     <Modal
       className="modalCardDetail"
       title={
         <React.Fragment>
           {Object.keys(stateCard.background).length > 0 ? (
-            <div style={{ backgroundColor: "#bdbdbd", textAlign: "center" }}>
+            <div style={{ backgroundColor: "#8d6e63", textAlign: "center" }}>
               <Image width={200} src={stateCard.background.url} />
             </div>
-          ) : null}
+          ) : (
+            <div style={{ height: "20px", backgroundColor: "#f5f5f5" }}></div>
+          )}
         </React.Fragment>
       }
       visible={visible}
+      closeIcon={
+        <CloseOutlined
+          style={{
+            position: "absolute",
+            top: 0,
+            padding: "1vh 0",
+            color:
+              Object.keys(stateCard.background).length > 0 ? "#fff" : "#757575",
+          }}
+        />
+      }
       onCancel={handleCancel}
       footer={false}
       width="60vw"

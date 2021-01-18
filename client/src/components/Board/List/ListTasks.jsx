@@ -41,9 +41,9 @@ ListTasks.propTypes = {
 
 const style = {
   listStyle: {
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#eeeeee",
     borderRadius: "0.2rem",
-    padding: "0.5rem",
+    padding: "0 0.5vw",
   },
 };
 
@@ -87,100 +87,97 @@ function ListTasks(props) {
       ref={innerRef}
       style={getStyle(snapshot.isDragging, provided.draggableProps.style)}
     >
-      <Droppable droppableId={`${list._id}`}>
-        {(provided, snapshot) => {
-          return (
-            <div
-              ref={provided.innerRef}
-              type={`QUOTE`}
-              direction="vertical"
-              className="list-kanban"
+      <div>
+        <List
+          style={style.listStyle}
+          header={
+            <List.Item
+              {...dragHandleProps}
+              style={{ padding: "0 0.5vw", margin: "0", color: "#616161" }}
+              title={list.title}
+              extra={
+                <Popover
+                  title="Thao tác"
+                  trigger="click"
+                  visible={visiblePopover}
+                  onVisibleChange={handlePopoverVisibleChange}
+                  content={
+                    <div>
+                      <p className="delete-list" onClick={handleDeleteList}>
+                        Xóa danh sách
+                      </p>
+                      <p className="edit-list" onClick={openFormEditList}>
+                        Chỉnh sửa danh sách
+                      </p>
+                    </div>
+                  }
+                >
+                  <EllipsisOutlined />
+                </Popover>
+              }
             >
-              <List
-                style={style.listStyle}
-                header={
-                  <List.Item
-                    {...dragHandleProps}
-                    style={{ padding: "0", margin: "0" }}
-                    title={list.title}
-                    extra={
-                      <Popover
-                        title="Thao tác"
-                        trigger="click"
-                        visible={visiblePopover}
-                        onVisibleChange={handlePopoverVisibleChange}
-                        content={
-                          <div>
-                            <p
-                              className="delete-list"
-                              onClick={handleDeleteList}
-                            >
-                              Xóa danh sách
-                            </p>
-                            <p className="edit-list" onClick={openFormEditList}>
-                              Chỉnh sửa danh sách
-                            </p>
-                          </div>
-                        }
-                      >
-                        <EllipsisOutlined />
-                      </Popover>
-                    }
-                  >
-                    {list.title}
-                  </List.Item>
+              {list.title}
+            </List.Item>
+          }
+          footer={
+            <React.Fragment>
+              {openForm ? (
+                <FormAddCard
+                  setOpenForm={setOpenForm}
+                  list={list}
+                  handleAddCard={handleAddCard}
+                />
+              ) : null}
+              <Card
+                style={{ backgroundColor: "transparent", opacity: "0.5" }}
+                title={
+                  <div onClick={openFormCard} style={{ cursor: "pointer" }}>
+                    <PlusOutlined />
+                    <span> Thêm thẻ khác</span>
+                  </div>
                 }
-                dataSource={list.cards || []}
-                renderItem={(card, index) => (
-                  <List.Item style={{ padding: "0" }} key={index}>
-                    <CardContainer
-                      card={card}
-                      index={index}
-                      handleDeleteCard={handleDeleteCard}
-                      handleEditCard={handleEditCard}
-                    />
-                  </List.Item>
-                )}
-                footer={
-                  <React.Fragment>
-                    {openForm ? (
-                      <FormAddCard
-                        setOpenForm={setOpenForm}
-                        list={list}
-                        handleAddCard={handleAddCard}
-                      />
-                    ) : null}
-                    <Card
-                      style={{ backgroundColor: "transparent", opacity: "0.5" }}
-                      title={
-                        <div
-                          onClick={openFormCard}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <PlusOutlined />
-                          <span> Thêm thẻ khác</span>
-                        </div>
-                      }
-                      bodyStyle={{
-                        padding: "0",
-                      }}
-                      size="small"
-                    />
-                  </React.Fragment>
-                }
-              >
-                {provided.placeholder}
-              </List>
-              <FormEditList
-                list={list}
-                handleSave={handleEditList}
-                setVisible={setVisibleFormEdit}
-                visible={visibleFormEditList}
+                bodyStyle={{
+                  padding: "0",
+                }}
+                size="small"
               />
-            </div>
-          );
-        }}
-      </Droppable>
+            </React.Fragment>
+          }
+        >
+          <Droppable droppableId={`${list._id}`}>
+            {(provided, snapshot) => {
+              return (
+                <div
+                  ref={provided.innerRef}
+                  type={`QUOTE`}
+                  direction="vertical"
+                  className="list-kanban"
+                >
+                  {list.cards.map((card, index) => {
+                    return (
+                      <List.Item style={{ padding: "0" }} key={index}>
+                        <CardContainer
+                          card={card}
+                          index={index}
+                          handleDeleteCard={handleDeleteCard}
+                          handleEditCard={handleEditCard}
+                        />
+                      </List.Item>
+                    );
+                  })}
+                  {provided.placeholder}
+                </div>
+              );
+            }}
+          </Droppable>
+        </List>
+        <FormEditList
+          list={list}
+          handleSave={handleEditList}
+          setVisible={setVisibleFormEdit}
+          visible={visibleFormEditList}
+        />
+      </div>
     </div>
   );
 }

@@ -20,6 +20,7 @@ function LabelUpdateForm(props) {
     <Card
       size="small"
       title={<div style={{ textAlign: "center" }}>Chỉnh sửa nhãn</div>}
+      style={{ boxShadow: "0 0 2px 2px rgba(0,0,0,0.2)" }}
       bordered={false}
     >
       <Form

@@ -26,12 +26,6 @@ function AddToCardContainer(props) {
   const dispatch = useDispatch();
   const match = useRouteMatch();
 
-  const handleSaveExDate = (card, time, date, timer) => {
-    dispatch(
-      addExDateRequest(card.id, { date: time + date, timer, successed: false })
-    );
-  };
-
   const handleDeleteExDate = (card) => {
     dispatch(deleteExDateRequest(card.id));
   };
@@ -62,7 +56,6 @@ function AddToCardContainer(props) {
   return (
     <AddToCard
       card={cardTaskReducer}
-      handleSaveExDate={handleSaveExDate}
       handleDeleteExDate={handleDeleteExDate}
       handlePreviewFile={handlePreviewFile}
       handlePreviewImg={handlePreviewImg}

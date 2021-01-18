@@ -1,9 +1,12 @@
+const { card } = require("../models");
 const db = require("../models");
 const Board = db.board;
 const User = db.user;
 const List = db.list;
 const Card = db.card;
 const Label = db.label;
+const File = db.file;
+const Action = db.action;
 
 exports.createBoard = (req, res) => {
   const board = new Board({
@@ -12,6 +15,7 @@ exports.createBoard = (req, res) => {
     title: req.body.title,
     backgroundColor: req.body.color,
     members: [req.userId],
+    done: false,
   });
   board.save((err, board) => {
     if (err) {
@@ -84,8 +88,10 @@ exports.getDetailBoard = async (req, res) => {
     let board = await Board.findById(req.params.id).lean();
     let admin = await User.findById(board.adminId).lean();
     let creater = await User.findById(board.createdById).lean();
+    let done = board.done || false;
     let members = [];
     let lists = [];
+    let actions = [];
     for (let i = 0; i < board.members.length; i++) {
       let dataMember = await User.findById(board.members[i]);
       members.push({
@@ -96,18 +102,54 @@ exports.getDetailBoard = async (req, res) => {
         alias: dataMember.fullname.substring(0, 2).toUpperCase(),
       });
     }
+    for (let i = 0; i < board.actions.length; i++) {
+      let dataAction = await Action.findById(board.actions[i]).lean();
+      let userAction = await User.findById(dataAction.createdById).lean();
+      userAction = {
+        ...userAction,
+        alias: userAction.fullname.substring(0, 2).toUpperCase(),
+      };
+      if (dataAction.card) {
+        let cardAction = await card.findById(dataAction.card).lean();
+        actions.push({
+          ...dataAction,
+          createdById: userAction,
+          card: { _id: cardAction._id, title: cardAction.title },
+        });
+      } else actions.push({ ...dataAction, createdById: userAction });
+    }
     for (let i = 0; i < board.lists.length; i++) {
       let dataList = await List.findById(board.lists[i]).lean();
       if (dataList.cards.length > 0) {
         let cards = [];
         for (let j = 0; j < dataList.cards.length; j++) {
           let labels = [];
+          let members = [];
+          let background = "";
+          let files = [];
           let dataCard = await Card.findById(dataList.cards[j]).lean();
           for (let k = 0; k < dataCard.labels.length; k++) {
             let dataLabels = await Label.findById(dataCard.labels[k]).lean();
             labels.push(dataLabels);
           }
-          dataCard = { ...dataCard, labels };
+          for (let i = 0; i < dataCard.members.length; i++) {
+            let dataMember = await User.findById(dataCard.members[i]).lean();
+            members.push({
+              ...dataMember,
+              alias: dataMember.fullname.substring(0, 2).toUpperCase(),
+            });
+          }
+          for (let i = 0; i < dataCard.files.length; i++) {
+            let dataFile = await File.findById(dataCard.files[i]).lean();
+            files.push(dataFile);
+          }
+          if (dataCard.background.length > 0) {
+            let dataBackground = await File.findById(
+              dataCard.background
+            ).lean();
+            background = dataBackground.url;
+          }
+          dataCard = { ...dataCard, labels, members, files, background };
           cards.push(dataCard);
         }
         dataList = { ...dataList, cards };
@@ -134,6 +176,8 @@ exports.getDetailBoard = async (req, res) => {
       },
       members,
       lists,
+      actions,
+      done,
     };
     res.status(200).json({
       code: 200,

@@ -50,3 +50,9 @@ export const updateBoardSuccess = (data) => {
     },
   };
 };
+
+export const resetBoard = () => {
+  return {
+    type: boardsConst.RESET_BOARD,
+  };
+};

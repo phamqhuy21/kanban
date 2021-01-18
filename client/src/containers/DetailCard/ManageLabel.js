@@ -13,6 +13,7 @@ import { getBoardDetailReq } from "../../redux/actions/boards";
 import LabelCreateForm from "../../components/Board/AddToCard/LabelCreateForm";
 import LabelUpdateForm from "../../components/Board/AddToCard/LabelUpdateForm";
 import { createLabel, deleteLabel, updateLabel } from "../../api/label";
+import { createAction } from "../../api/action";
 
 ManageLabel.propTypes = {};
 
@@ -61,6 +62,17 @@ function ManageLabel(props) {
           dispatch(getBoardDetailReq(boardId));
           dispatch(getDataCardReq(boardId, cardId));
           dispatch(getLabelsBoardReq(boardId));
+          createAction({
+            boardId,
+            cardId,
+            data: {
+              action: `thêm một nhãn dán`,
+            },
+          }).then((res) => {
+            if (res.status === 200) {
+              dispatch(getBoardDetailReq(boardId));
+            }
+          });
         } else {
           message.error(`Cập nhật thẻ ${card.title} thất bại`);
         }
@@ -89,12 +101,25 @@ function ManageLabel(props) {
         color,
       };
     }
+    console.log(dataReq);
     createLabel(dataReq)
       .then((res) => {
         if (res.status === 200) {
           message.success("Tạo mới nhãn thành công");
           dispatch(getBoardDetailReq(boardId));
           dispatch(getDataCardReq(boardId, cardId));
+          dispatch(getLabelsBoardReq(boardId));
+          createAction({
+            boardId,
+            cardId,
+            data: {
+              action: `tạo mới một nhãn dán`,
+            },
+          }).then((res) => {
+            if (res.status === 200) {
+              dispatch(getBoardDetailReq(boardId));
+            }
+          });
         } else message.error("Tạo mới nhãn thất bại");
       })
       .catch((err) => {
@@ -129,6 +154,18 @@ function ManageLabel(props) {
           message.success("Cập nhật nhãn thành công");
           dispatch(getBoardDetailReq(boardId));
           dispatch(getDataCardReq(boardId, cardId));
+          dispatch(getLabelsBoardReq(boardId));
+          createAction({
+            boardId,
+            cardId,
+            data: {
+              action: `chỉnh sửa nhãn dán`,
+            },
+          }).then((res) => {
+            if (res.status === 200) {
+              dispatch(getBoardDetailReq(boardId));
+            }
+          });
         } else message.error("Cập nhật nhãn thất bại");
       })
       .catch((err) => {
@@ -142,7 +179,9 @@ function ManageLabel(props) {
     let cardId = cardTaskReducer._id;
     let labelId = label._id;
     let labelsCard = await cloneDeep(cardTaskReducer.labels);
-    let indexLabel = labelsCard.indexOf(labelId);
+    let indexLabel = findIndex(labelsCard, (labelCard) => {
+      return labelCard._id === labelId;
+    });
     if (indexLabel !== -1) {
       await labelsCard.splice(indexLabel, 1);
       let dataReq = {
@@ -158,6 +197,20 @@ function ManageLabel(props) {
             message.success(
               `Xoá nhãn trong thẻ ${cardTaskReducer.title} thành công`
             );
+            dispatch(getBoardDetailReq(boardId));
+            dispatch(getDataCardReq(boardId, cardId));
+            dispatch(getLabelsBoardReq(boardId));
+            createAction({
+              boardId,
+              cardId,
+              data: {
+                action: `xóa một nhãn dán`,
+              },
+            }).then((res) => {
+              if (res.status === 200) {
+                dispatch(getBoardDetailReq(boardId));
+              }
+            });
           } else {
             message.error(
               `Xoá nhãn trong thẻ ${cardTaskReducer.title} thất bại`

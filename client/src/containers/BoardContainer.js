@@ -9,6 +9,7 @@ import { useRouteMatch } from "react-router-dom";
 import { message } from "antd";
 import { getBoardDetailReq, updateBoardRequest } from "../redux/actions/boards";
 import { updateBoard } from "../api/boards";
+import { createAction } from "../api/action";
 
 function BoardContainer(props) {
   const listTasksReducer = useSelector((state) => state.listTasksReducer);
@@ -25,23 +26,12 @@ function BoardContainer(props) {
 
   const reorderSameList = (dataBoard, destination, source) => {
     let cloneDataBoard = cloneDeep(dataBoard);
-    // let arr = cloneDataBoard.filter(
-    //   (listTask) => listTask._id === destination.droppableId
-    // );
     cloneDataBoard = cloneDataBoard.map((list) => {
       if (list._id === destination.droppableId) {
         let cards = reorder(list.cards, source.index, destination.index);
         return { ...list, cards };
       } else return list;
     });
-    // const cards = reorder(arr[0].cards, source.index, destination.index);
-    // const res = { ...arr[0], cards };
-    // var kanbann = cloneDeep(dataBoard);
-    // dataBoard.forEach((e, index) => {
-    //   if (e.id === res.id) {
-    //     kanbann[index] = res;
-    //   }
-    // });
     return cloneDataBoard;
   };
 
@@ -64,7 +54,7 @@ function BoardContainer(props) {
   };
 
   const onDragEnd = (result, data) => {
-    const { destination, source, reason } = result;
+    const { destination, source, reason, draggableId } = result;
     let boardId = match.params.id;
     if (!destination || reason === "CANCEL") {
       return;
@@ -86,6 +76,16 @@ function BoardContainer(props) {
           .then((res) => {
             if (res.status === 200) {
               message.success("Cập nhật vị trí danh sách thành công");
+              createAction({
+                boardId,
+                data: {
+                  action: `cập nhật vị trí danh sách trong bảng`,
+                },
+              }).then((res) => {
+                if (res.status === 200) {
+                  dispatch(getBoardDetailReq(boardId));
+                }
+              });
             } else message.error("Cập nhật vị trí danh sách thất bại");
           })
           .catch((err) => {
@@ -96,6 +96,9 @@ function BoardContainer(props) {
         break;
       }
       case source.droppableId: {
+        let listOrder = listTasksReducer.filter((list) => {
+          return list._id === source.droppableId;
+        })[0];
         let res = reorderSameList(data, destination, source);
         let listId = destination.droppableId;
         let dataReq = {
@@ -114,6 +117,16 @@ function BoardContainer(props) {
           .then((res) => {
             if (res.status === 200) {
               message.success("Cập nhật vị trí thẻ nhiệm vụ thành công");
+              createAction({
+                boardId,
+                data: {
+                  action: `cập nhật vị trí thẻ trong danh sách ${listOrder.title}`,
+                },
+              }).then((res) => {
+                if (res.status === 200) {
+                  dispatch(getBoardDetailReq(boardId));
+                }
+              });
             } else message.error("Cập nhật vị trí thẻ nhiệm vụ thất bại");
           })
           .catch((err) => {
@@ -124,6 +137,15 @@ function BoardContainer(props) {
         break;
       }
       default: {
+        let listOrderSource = listTasksReducer.filter((list) => {
+          return list._id === source.droppableId;
+        })[0];
+        let cardOrder = listOrderSource.cards.filter((card) => {
+          return card._id === draggableId;
+        })[0];
+        let listOrderDestination = listTasksReducer.filter((list) => {
+          return list._id === destination.droppableId;
+        })[0];
         let res = reorderDifferentList(data, destination, source);
         let listSourceId = source.droppableId;
         let listDestinationId = destination.droppableId;
@@ -145,6 +167,16 @@ function BoardContainer(props) {
           .then((res) => {
             if (res.status === 200) {
               message.success("Cập nhật vị trí thẻ nhiệm vụ thành công");
+              createAction({
+                boardId,
+                data: {
+                  action: `di chuyển thẻ ${cardOrder.title} từ danh sách ${listOrderSource.title} đến danh sách ${listOrderDestination.title}`,
+                },
+              }).then((res) => {
+                if (res.status === 200) {
+                  dispatch(getBoardDetailReq(boardId));
+                }
+              });
             } else message.error("Cập nhật vị trí thẻ nhiệm vụ thất bại");
           })
           .catch((err) => {
@@ -182,11 +214,22 @@ function BoardContainer(props) {
   };
 
   const handleAddList = (title) => {
-    createList(match.params.id, { title: title })
+    let boardId = match.params.id;
+    createList(boardId, { title: title })
       .then((res) => {
         if (res.status === 200) {
           message.success("Tạo danh sách thành công");
-          dispatch(getBoardDetailReq(match.params.id));
+          dispatch(getBoardDetailReq(boardId));
+          createAction({
+            boardId,
+            data: {
+              action: `tạo mới danh sách ${title}`,
+            },
+          }).then((res) => {
+            if (res.status === 200) {
+              dispatch(getBoardDetailReq(boardId));
+            }
+          });
         } else message.error("Tạo danh sách thất bại");
       })
       .catch((err) => {

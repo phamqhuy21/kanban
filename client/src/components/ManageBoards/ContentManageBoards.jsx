@@ -24,21 +24,67 @@ const style = {
 };
 
 function ContentManageBoards(props) {
-  const { boards, children, handleOpenFormCreate, openFormCreate } = props;
+  const {
+    boards,
+    children,
+    handleOpenFormCreate,
+    openFormCreate,
+    typeBoard,
+  } = props;
   const [individualBoard, setIndividualBoard] = useState([]);
   const [groupBoard, setGroupBoard] = useState([]);
+  const [boardByType, setBoardByType] = useState();
 
   useEffect(() => {
     let cloneBoards = cloneDeep(boards);
-    let cloneInvidualBoard = cloneBoards.filter((board) => {
-      return board.members.length === 1;
-    });
-    let cloneGroupBoard = cloneBoards.filter((board) => {
-      return board.members.length > 1;
-    });
-    setIndividualBoard(cloneInvidualBoard);
-    setGroupBoard(cloneGroupBoard);
-  }, [boards]);
+    switch (typeBoard) {
+      case "done": {
+        setBoardByType(
+          cloneBoards.filter((board) => {
+            return board.done;
+          })
+        );
+        break;
+      }
+      case "progress": {
+        setBoardByType(
+          cloneBoards.filter((board) => {
+            return !board.done;
+          })
+        );
+        break;
+      }
+      case "recently": {
+        setBoardByType(
+          cloneBoards
+            .sort((prev, next) => {
+              let prevDate = new Date(prev.createdAt).valueOf();
+              let nextDate = new Date(next.createdAt).valueOf();
+              return nextDate - prevDate;
+            })
+            .slice(0, 4)
+        );
+        break;
+      }
+      default:
+        break;
+    }
+  }, [boards, typeBoard]);
+
+  useEffect(() => {
+    console.log(boardByType);
+    if (boardByType) {
+      let cloneBoards = cloneDeep(boardByType);
+      let cloneInvidualBoard = cloneBoards.filter((board) => {
+        return board.members.length === 1;
+      });
+      let cloneGroupBoard = cloneBoards.filter((board) => {
+        return board.members.length > 1;
+      });
+      setIndividualBoard(cloneInvidualBoard);
+      setGroupBoard(cloneGroupBoard);
+    }
+  }, [boardByType, boards]);
 
   return (
     <div>
@@ -116,43 +162,47 @@ function ContentManageBoards(props) {
           </div>
         </Row>
         <Row>
-          {boards.map((board, index) => (
-            <Col
-              span={6}
-              key={index}
-              style={{ marginRight: "1vw", marginBottom: "7px" }}
-            >
-              <Link to={`/board/${board._id}`}>
+          {boardByType
+            ? boardByType.map((board, index) => (
+                <Col
+                  span={6}
+                  key={index}
+                  style={{ marginRight: "1vw", marginBottom: "7px" }}
+                >
+                  <Link to={`/board/${board._id}`}>
+                    <Card
+                      className="card-board"
+                      bodyStyle={{
+                        ...style.bodyCardStyle,
+                        backgroundColor: board.backgroundColor
+                          ? board.backgroundColor
+                          : "#4caf50",
+                      }}
+                    >
+                      <p title={board.title}>{board.title}</p>
+                    </Card>
+                  </Link>
+                </Col>
+              ))
+            : null}
+          {typeBoard === "progress" ? (
+            <Col span={6} style={{ marginBottom: "7px" }}>
+              {openFormCreate ? (
+                children
+              ) : (
                 <Card
-                  className="card-board"
                   bodyStyle={{
                     ...style.bodyCardStyle,
-                    backgroundColor: board.backgroundColor
-                      ? board.backgroundColor
-                      : "#4caf50",
+                    backgroundColor: "#e0e0e0",
+                    color: "#000000",
                   }}
+                  onClick={handleOpenFormCreate}
                 >
-                  <p title={board.title}>{board.title}</p>
+                  <p>Tạo bảng mới</p>
                 </Card>
-              </Link>
+              )}
             </Col>
-          ))}
-          <Col span={6} style={{ marginBottom: "7px" }}>
-            {openFormCreate ? (
-              children
-            ) : (
-              <Card
-                bodyStyle={{
-                  ...style.bodyCardStyle,
-                  backgroundColor: "#e0e0e0",
-                  color: "#000000",
-                }}
-                onClick={handleOpenFormCreate}
-              >
-                <p>Tạo bảng mới</p>
-              </Card>
-            )}
-          </Col>
+          ) : null}
         </Row>
       </React.Fragment>
     </div>

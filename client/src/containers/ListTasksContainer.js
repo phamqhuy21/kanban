@@ -48,7 +48,12 @@ function ListTasksContainer(props) {
   const handleAddCard = (value) => {
     let boardId = match.params.id;
     let listId = list._id;
-    createCardTask(boardId, listId, { title: value })
+    let dataReq = {
+      boardId,
+      listId,
+      data: { title: value },
+    };
+    createCardTask(dataReq)
       .then((res) => {
         if (res.status === 200) {
           message.success("Thêm thẻ nhiệm vụ thành công");

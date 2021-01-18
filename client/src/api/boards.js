@@ -1,14 +1,12 @@
 import { BASE_URL, PATH } from "../const/api";
 import callApi from "../utils/apiCaller";
 
-const accessToken = localStorage.getItem("accessToken");
-
-const header = {
-  "x-access-token": accessToken,
-  "Content-Type": "application/json",
-};
-
-export const getBoards = (data) => {
+export const getBoards = () => {
+  const accessToken = localStorage.getItem("accessToken");
+  const header = {
+    "x-access-token": accessToken,
+    "Content-Type": "application/json",
+  };
   let config = {
     method: "get",
     url: `${BASE_URL}/${PATH}/boards`,
@@ -18,6 +16,11 @@ export const getBoards = (data) => {
 };
 
 export const getDetailBoard = (boardId) => {
+  const accessToken = localStorage.getItem("accessToken");
+  const header = {
+    "x-access-token": accessToken,
+    "Content-Type": "application/json",
+  };
   let config = {
     method: "get",
     url: `${BASE_URL}/${PATH}/board/${boardId}`,
@@ -27,6 +30,11 @@ export const getDetailBoard = (boardId) => {
 };
 
 export const createBoard = (data) => {
+  const accessToken = localStorage.getItem("accessToken");
+  const header = {
+    "x-access-token": accessToken,
+    "Content-Type": "application/json",
+  };
   let config = {
     method: "post",
     url: `${BASE_URL}/${PATH}/board/create`,
@@ -37,6 +45,11 @@ export const createBoard = (data) => {
 };
 
 export const updateBoard = (boardId, data) => {
+  const accessToken = localStorage.getItem("accessToken");
+  const header = {
+    "x-access-token": accessToken,
+    "Content-Type": "application/json",
+  };
   let config = {
     method: "put",
     url: `${BASE_URL}/${PATH}/board/${boardId}`,

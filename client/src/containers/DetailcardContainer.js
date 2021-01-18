@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import DetailCard from "../components/Board/DetailCard/DetailCard";
 import { useDispatch, useSelector } from "react-redux";
-import { addCommentRequest, endExDateRequest } from "../redux/actions/board";
-import { cloneDeep, filter } from "lodash";
+import { endExDateRequest } from "../redux/actions/board";
+import { cloneDeep } from "lodash";
 import { getDataCardReq } from "../redux/actions/cardTask";
 import { useRouteMatch } from "react-router-dom";
 import { getDetailCardTask } from "../api/cardTask";
@@ -15,6 +15,9 @@ import { getLabelsBoardReq } from "../redux/actions/label";
 import Member from "../components/Board/DetailCard/Member";
 import { CreditCardOutlined } from "@ant-design/icons";
 import FileAttachmentsContainer from "./DetailCard/FileAttachmentsContainer";
+import ExpirationDate from "../components/Board/DetailCard/ExpirationDate";
+import CommentContainer from "./DetailCard/CommentContainer";
+import Manipulation from "../components/Board/Manupulation/Manipulation";
 
 DetailcardContainer.propTypes = {
   card: PropTypes.shape({
@@ -37,7 +40,6 @@ const { Content, Sider } = Layout;
 
 function DetailcardContainer(props) {
   const { card, visible, setVisible } = props;
-  const user = useSelector((state) => state.user);
   const cardTaskReducer = useSelector((state) => state.cardTaskReducer);
   const detailBoardReducer = useSelector((state) => state.detailBoardReducer);
   const dispatch = useDispatch();
@@ -45,10 +47,6 @@ function DetailcardContainer(props) {
 
   const handleCancel = () => {
     setVisible(false);
-  };
-
-  const addComment = (comment) => {
-    dispatch(addCommentRequest(card._id, comment));
   };
 
   const handleCheckSuccess = (e) => {
@@ -76,8 +74,6 @@ function DetailcardContainer(props) {
           stateCard={cardTaskReducer}
           visible={visible}
           handleCancel={handleCancel}
-          user={user}
-          addComment={addComment}
           handleCheckSuccess={handleCheckSuccess}
         >
           <Content style={{ backgroundColor: "#f5f5f5" }}>
@@ -109,23 +105,23 @@ function DetailcardContainer(props) {
                   {cardTaskReducer.labels.length > 0 ? (
                     <Label card={cardTaskReducer} />
                   ) : null}
-                  {/* {Object.keys(stateCard.exDate).length > 0 ? (
-              <ExpirationDate
-                card={stateCard}
-                handleCheckSuccess={handleCheckSuccess}
-              />
-            ) : null} */}
+                  {card.deadline ? (
+                    <ExpirationDate
+                      card={card}
+                      handleCheckSuccess={handleCheckSuccess}
+                    />
+                  ) : null}
                 </div>
               </Col>
             </Row>
             <DescriptionContainer card={cardTaskReducer} />
             <FileAttachmentsContainer card={cardTaskReducer} />
-            {/* <Activity card={stateCard} user={user} />
-          <Comments user={user} addComment={addComment} card={stateCard} /> */}
+            {/* <Activity card={stateCard} user={user} /> */}
+            <CommentContainer card={cardTaskReducer} />
           </Content>
           <Sider style={style.siderStyle}>
             <AddToCardContainer />
-            {/* <Manipulation card={stateCard} /> */}
+            <Manipulation card={card} />
           </Sider>
         </DetailCard>
       ) : null}

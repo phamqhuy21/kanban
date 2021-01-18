@@ -1,4 +1,3 @@
-const { mongoose, label } = require("../models");
 const db = require("../models");
 const Board = db.board;
 const Card = db.card;
