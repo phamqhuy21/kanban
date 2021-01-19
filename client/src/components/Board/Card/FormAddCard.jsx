@@ -15,7 +15,6 @@ function FormAddCard({ setOpenForm, list, handleAddCard }) {
   return (
     <Form
       form={form}
-      name="basic"
       onKeyPress={(event) => {
         if (event.key === "Enter") {
           onAddCard();

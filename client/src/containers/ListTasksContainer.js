@@ -18,6 +18,7 @@ import {
   deleteCardTask,
   updateCardTask,
 } from "../api/cardTask";
+import { createAction } from "../api/action";
 
 ListTasksContainer.propTypes = {
   list: PropTypes.shape({
@@ -56,16 +57,26 @@ function ListTasksContainer(props) {
     createCardTask(dataReq)
       .then((res) => {
         if (res.status === 200) {
-          message.success("Thêm thẻ nhiệm vụ thành công");
+          message.success(`Thêm thẻ nhiệm vụ ${value} thành công`);
           dispatch(addCardRequest(res.data.data, listId));
+          createAction({
+            boardId,
+            data: {
+              action: `thêm thẻ nhiệm vụ ${value}`,
+            },
+          }).then((res) => {
+            if (res.status === 200) {
+              dispatch(getBoardDetailReq(boardId));
+            }
+          });
         } else {
-          message.error("Thêm thẻ nhiệm vụ thất bại");
+          message.error(`Thêm thẻ nhiệm vụ ${value} thất bại`);
         }
       })
       .catch((err) => {
         if (err.response) {
           message.error(err.response.data.message);
-        } else message.error("Thêm thẻ nhiệm vụ thất bại");
+        } else message.error(`Thêm thẻ nhiệm vụ ${value} thất bại`);
       });
     setOpenForm(false);
   };
@@ -80,22 +91,33 @@ function ListTasksContainer(props) {
     })
       .then((res) => {
         if (res.status === 200) {
-          message.success("Xóa thẻ nhiệm vụ thành công");
+          message.success(`Xóa thẻ nhiệm vụ ${card.title} thành công`);
           dispatch(getBoardDetailReq(boardId));
+          createAction({
+            boardId,
+            data: {
+              action: `xóa thẻ nhiệm vụ ${card.title}`,
+            },
+          }).then((res) => {
+            if (res.status === 200) {
+              dispatch(getBoardDetailReq(boardId));
+            }
+          });
           //   dispatch(deleteCardRequest(listId, cardId));
         } else {
-          message.error("Xóa thẻ nhiệm vụ thất bại");
+          message.error(`Xóa thẻ nhiệm vụ ${card.title} thất bại`);
         }
       })
       .catch((err) => {
         if (err.response) {
           message.error(err.response.data.message);
-        } else message.error("Xóa thẻ nhiệm vụ thất bại");
+        } else message.error(`Xóa thẻ nhiệm vụ ${card.title} thất bại`);
       });
   };
 
-  const handleEditCard = (cardId, title) => {
+  const handleEditCard = (card, title) => {
     let boardId = match.params.id;
+    let cardId = card._id;
     let dataReq = {
       boardId,
       cardId,
@@ -106,17 +128,27 @@ function ListTasksContainer(props) {
     updateCardTask(dataReq)
       .then((res) => {
         if (res.status === 200) {
-          message.success("Cập nhật thẻ nhiệm vụ thành công");
+          message.success(`Cập nhật thẻ nhiệm vụ ${card.title} thành công`);
+          createAction({
+            boardId,
+            data: {
+              action: `cập nhật thẻ nhiệm vụ ${card.title}`,
+            },
+          }).then((res) => {
+            if (res.status === 200) {
+              dispatch(getBoardDetailReq(boardId));
+            }
+          });
           dispatch(getBoardDetailReq(boardId));
           //   dispatch(editCardRequest(list._id, cardId, { title }));
         } else {
-          message.error("Cập nhật thẻ nhiệm vụ thất bại");
+          message.error(`Cập nhật thẻ nhiệm vụ ${card.title} thất bại`);
         }
       })
       .catch((err) => {
         if (err.response) {
           message.error(err.response.data.message);
-        } else message.error("Cập nhật thẻ nhiệm vụ thất bại");
+        } else message.error(`Cập nhật thẻ nhiệm vụ ${card.title} thất bại`);
       });
   };
 

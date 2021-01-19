@@ -6,7 +6,7 @@ import moment from "moment";
 FileAttachments.propTypes = {};
 
 function FileAttachments(props) {
-  const { file } = props;
+  const { file, handleDeleteFile } = props;
   return (
     <Row>
       <Col span={5}>
@@ -17,8 +17,17 @@ function FileAttachments(props) {
           height={80}
         />
       </Col>
-      <Col span={19}>
-        <b>{file.fileName}</b>
+      <Col span={17}>
+        <div>
+          <a
+            href={`${file.url}`}
+            rel="noreferrer"
+            target="_blank"
+            style={{ fontWeight: "500" }}
+          >
+            {file.fileName}
+          </a>
+        </div>
         <p style={{ color: "#9e9e9e", fontSize: "0.9em" }}>
           {moment()
             .subtract(
@@ -28,6 +37,20 @@ function FileAttachments(props) {
             )
             .fromNow()}
         </p>
+      </Col>
+      <Col span={2}>
+        <i
+          className="fas fa-trash-alt"
+          style={{
+            marginLeft: "5px",
+            padding: "5px 10px",
+            cursor: "pointer",
+            color: "#ef5350",
+          }}
+          onClick={() => {
+            handleDeleteFile(file);
+          }}
+        ></i>
       </Col>
     </Row>
   );

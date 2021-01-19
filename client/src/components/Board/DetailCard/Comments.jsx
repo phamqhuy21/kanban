@@ -33,7 +33,6 @@ Comments.propTypes = {
 
 const style = {
   bodyCardStyle: { padding: "5px", boxShadow: "0 0 1px 1px rgba(0,0,0,0.1)" },
-  headCardStyle: { padding: "0 1vw", border: "none" },
   cardStyle: { backgroundColor: "#f5f5f5" },
   btnSaveStyle: {
     backgroundColor: "#4caf50",
@@ -52,6 +51,7 @@ function Comments(props) {
     card,
     handleUpdateComment,
     handleDeleteComment,
+    showComment,
   } = props;
   const [comment, setComment] = useState("");
   const [visibleEdit, setVisibleEdit] = useState(false);
@@ -72,22 +72,7 @@ function Comments(props) {
   };
 
   return (
-    <Card
-      bordered={false}
-      style={style.cardStyle}
-      title={
-        <Row>
-          <Col span={1}>
-            <CommentOutlined style={{ color: "#757575" }} />
-          </Col>
-          <Col span={23}>
-            <span style={{ color: "#757575" }}>Bình luận</span>
-          </Col>
-        </Row>
-      }
-      headStyle={style.headCardStyle}
-      bodyStyle={{ paddingTop: "0" }}
-    >
+    <React.Fragment>
       <Row>
         <Col span={1}>
           <Avatar>{user.alias}</Avatar>
@@ -124,85 +109,87 @@ function Comments(props) {
           </Card>
         </Col>
       </Row>
-      <Row>
-        {card.comments.length > 0 ? (
-          <List
-            dataSource={card.comments.sort((prev, next) => {
-              return (
-                new Date(next.updatedAt).valueOf() -
-                new Date(prev.updatedAt).valueOf()
-              );
-            })}
-            renderItem={(comment, index) => {
-              return (
-                <li key={index}>
-                  <Comment
-                    actions={
-                      visibleEdit && comment._id === commentSelected._id
-                        ? []
-                        : [
-                            <span
-                              style={style.actionEditStyle}
-                              onClick={() => {
-                                setVisibleEdit(true);
-                                setCommentSelected(comment);
-                              }}
-                            >
-                              Chỉnh sửa
-                            </span>,
-                            <span
-                              style={style.actionDeleteStyle}
-                              onClick={() => handleDeleteComment(comment)}
-                            >
-                              Xóa
-                            </span>,
-                          ]
-                    }
-                    author={
-                      <b style={{ color: "black", fontSize: "1.2em" }}>
-                        {user.fullname}
-                      </b>
-                    }
-                    avatar={
-                      <Avatar style={{ marginRight: "10px" }}>
-                        {user.alias}
-                      </Avatar>
-                    }
-                    content={
-                      <div>
-                        {visibleEdit === true &&
-                        comment._id === commentSelected._id ? (
-                          <FormEditComment
-                            card={card}
-                            comment={commentSelected}
-                            setVisibleEdit={setVisibleEdit}
-                            handleUpdateComment={handleUpdateComment}
-                          />
-                        ) : (
-                          <p style={{ color: "black" }}>{comment.content}</p>
-                        )}
-                      </div>
-                    }
-                    datetime={
-                      <span style={{ color: "#9e9e9e" }}>
-                        {moment()
-                          .subtract(
-                            (new Date().valueOf() -
-                              new Date(comment.updatedAt).valueOf()) /
-                              60000,
-                            "minutes"
-                          )
-                          .fromNow()}
-                      </span>
-                    }
-                  />
-                </li>
-              );
-            }}
-          />
-        ) : null}
-      </Row>
-    </Card>
+      {showComment ? (
+        <Row>
+          {card.comments.length > 0 ? (
+            <List
+              dataSource={card.comments.sort((prev, next) => {
+                return (
+                  new Date(next.updatedAt).valueOf() -
+                  new Date(prev.updatedAt).valueOf()
+                );
+              })}
+              renderItem={(comment, index) => {
+                return (
+                  <li key={index}>
+                    <Comment
+                      actions={
+                        visibleEdit && comment._id === commentSelected._id
+                          ? []
+                          : [
+                              <span
+                                style={style.actionEditStyle}
+                                onClick={() => {
+                                  setVisibleEdit(true);
+                                  setCommentSelected(comment);
+                                }}
+                              >
+                                Chỉnh sửa
+                              </span>,
+                              <span
+                                style={style.actionDeleteStyle}
+                                onClick={() => handleDeleteComment(comment)}
+                              >
+                                Xóa
+                              </span>,
+                            ]
+                      }
+                      author={
+                        <b style={{ color: "black", fontSize: "1.2em" }}>
+                          {comment.createdById.fullname}
+                        </b>
+                      }
+                      avatar={
+                        <Avatar style={{ marginRight: "10px" }}>
+                          {comment.createdById.alias}
+                        </Avatar>
+                      }
+                      content={
+                        <div>
+                          {visibleEdit === true &&
+                          comment._id === commentSelected._id ? (
+                            <FormEditComment
+                              card={card}
+                              comment={commentSelected}
+                              setVisibleEdit={setVisibleEdit}
+                              handleUpdateComment={handleUpdateComment}
+                            />
+                          ) : (
+                            <p style={{ color: "black" }}>{comment.content}</p>
+                          )}
+                        </div>
+                      }
+                      datetime={
+                        <span style={{ color: "#9e9e9e" }}>
+                          {moment()
+                            .subtract(
+                              (new Date().valueOf() -
+                                new Date(comment.updatedAt).valueOf()) /
+                                60000,
+                              "minutes"
+                            )
+                            .fromNow()}
+                        </span>
+                      }
+                    />
+                  </li>
+                );
+              }}
+            />
+          ) : null}
+        </Row>
+      ) : null}
+    </React.Fragment>
   );
 }
 

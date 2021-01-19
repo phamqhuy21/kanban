@@ -24,42 +24,39 @@ const dummyRequest = ({ file, onSuccess }) => {
 };
 
 function UploadFileForm(props) {
-  const { card, handlePreviewFile } = props;
+  const { card, handleChange } = props;
   const match = useRouteMatch();
 
-  const handleChange = (info) => {
+  const onChange = (info) => {
     let boardId = match.params.id;
     let cardId = card._id;
     if (info.file.status === "uploading") {
       return;
     } else {
-      uploadFile(cardId, boardId, info.file.originFileObj)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      handleChange(cardId, boardId, info.file.originFileObj);
     }
   };
 
   return (
     <Card
       size="small"
-      title={<div>Đính kèm</div>}
+      title={<div style={{ textAlign: "center" }}>Đính kèm</div>}
       bordered={false}
-      //   bodyStyle={{ padding: "0" }}
+      style={{ boxShadow: "0 0 2px 2px rgba(0,0,0,0.2)" }}
       //   headStyle={{ padding: "0" }}
     >
       <Upload
-        {...PROP}
         customRequest={dummyRequest}
-        onChange={handleChange}
-        onPreview={(infor) => {
-          handlePreviewFile(infor, card);
-        }}
+        onChange={onChange}
+        showUploadList={false}
       >
-        <Button icon={<UploadOutlined />}>Tải lên file đính kèm</Button>
+        <Button
+          icon={
+            <i className="fas fa-upload" style={{ marginRight: "5px" }}></i>
+          }
+        >
+          Tải lên file đính kèm
+        </Button>
       </Upload>
     </Card>
   );

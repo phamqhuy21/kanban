@@ -6,8 +6,8 @@ import { endExDateRequest } from "../redux/actions/board";
 import { cloneDeep } from "lodash";
 import { getDataCardReq } from "../redux/actions/cardTask";
 import { useRouteMatch } from "react-router-dom";
-import { getDetailCardTask } from "../api/cardTask";
-import { Col, Layout, Row } from "antd";
+import { getDetailCardTask, updateCardTask } from "../api/cardTask";
+import { Col, Layout, message, Row } from "antd";
 import Label from "../components/Board/DetailCard/Label";
 import DescriptionContainer from "./DetailCard/DescriptionContainer";
 import AddToCardContainer from "./AddToCardContainer";
@@ -18,6 +18,9 @@ import FileAttachmentsContainer from "./DetailCard/FileAttachmentsContainer";
 import ExpirationDate from "../components/Board/DetailCard/ExpirationDate";
 import CommentContainer from "./DetailCard/CommentContainer";
 import Manipulation from "../components/Board/Manupulation/Manipulation";
+import { getBoardDetailReq } from "../redux/actions/boards";
+import { createAction } from "../api/action";
+import ActivityContainer from "./DetailCard/ActivityContainer";
 
 DetailcardContainer.propTypes = {
   card: PropTypes.shape({
@@ -61,6 +64,43 @@ function DetailcardContainer(props) {
     }
   };
 
+  const handleDeleteGround = () => {
+    let cloneCard = cloneDeep(cardTaskReducer);
+    let boardId = match.params.id;
+    let cardId = cloneCard._id;
+    let dataReq = {
+      boardId,
+      cardId,
+      data: {
+        background: "",
+      },
+    };
+    updateCardTask(dataReq)
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch(getBoardDetailReq(boardId));
+          dispatch(getDataCardReq(boardId, cardId));
+          message.success(`Xóa ảnh bìa thành công`);
+          createAction({
+            boardId,
+            cardId,
+            data: {
+              action: `xóa ảnh bìa`,
+            },
+          }).then((res) => {
+            if (res.status === 200) {
+              dispatch(getBoardDetailReq(boardId));
+            }
+          });
+        } else {
+          message.error(`Xóa ảnh bìa thất bại`);
+        }
+      })
+      .catch((err) => {
+        message.error(`Xóa ảnh bìa thất bại`);
+      });
+  };
+
   useEffect(() => {
     let boardId = match.params.id;
     dispatch(getDataCardReq(boardId, card._id));
@@ -75,6 +115,7 @@ function DetailcardContainer(props) {
           visible={visible}
           handleCancel={handleCancel}
           handleCheckSuccess={handleCheckSuccess}
+          handleDeleteGround={handleDeleteGround}
         >
           <Content style={{ backgroundColor: "#f5f5f5" }}>
             <Row style={{ display: "flex", alignItems: "center" }}>
@@ -105,9 +146,9 @@ function DetailcardContainer(props) {
                   {cardTaskReducer.labels.length > 0 ? (
                     <Label card={cardTaskReducer} />
                   ) : null}
-                  {card.deadline ? (
+                  {cardTaskReducer.deadline ? (
                     <ExpirationDate
-                      card={card}
+                      card={cardTaskReducer}
                       handleCheckSuccess={handleCheckSuccess}
                     />
                   ) : null}
@@ -115,9 +156,9 @@ function DetailcardContainer(props) {
               </Col>
             </Row>
             <DescriptionContainer card={cardTaskReducer} />
-            <FileAttachmentsContainer card={cardTaskReducer} />
-            {/* <Activity card={stateCard} user={user} /> */}
-            <CommentContainer card={cardTaskReducer} />
+            <FileAttachmentsContainer />
+            <ActivityContainer />
+            <CommentContainer />
           </Content>
           <Sider style={style.siderStyle}>
             <AddToCardContainer />

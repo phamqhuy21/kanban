@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Modal, Layout, Image } from "antd";
+import { Modal, Layout, Image, Button } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 
 DetailCard.propTypes = {
@@ -28,7 +28,13 @@ const style = {
 };
 
 function DetailCard(props) {
-  const { stateCard, visible, handleCancel, children } = props;
+  const {
+    stateCard,
+    visible,
+    handleCancel,
+    children,
+    handleDeleteGround,
+  } = props;
 
   return (
     <Modal
@@ -36,7 +42,25 @@ function DetailCard(props) {
       title={
         <React.Fragment>
           {Object.keys(stateCard.background).length > 0 ? (
-            <div style={{ backgroundColor: "#8d6e63", textAlign: "center" }}>
+            <div
+              style={{
+                backgroundColor: "#8d6e63",
+                textAlign: "center",
+                position: "relative",
+              }}
+            >
+              <Button
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  right: 0,
+                  backgroundColor: "hsla(0,0%,100%,.2)",
+                  border: "none",
+                }}
+                onClick={handleDeleteGround}
+              >
+                <i className="fas fa-trash-alt"></i>
+              </Button>
               <Image width={200} src={stateCard.background.url} />
             </div>
           ) : (

@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Card, Select, Button, Form } from "antd";
-import { useSelector, useDispatch } from "react-redux";
-import { moveCardRequest } from "../../../redux/actions/board";
 import { findIndex } from "lodash";
 
 const { Item } = Form;
 const { Option } = Select;
 
 function MoveCardForm(props) {
-  const { lists, card } = props;
+  const { lists, card, handleMoveCard } = props;
   const [formMove] = Form.useForm();
   let [stateList, setStateList] = useState();
 
@@ -32,6 +30,7 @@ function MoveCardForm(props) {
 
   const onFinish = (value) => {
     console.log(value);
+    handleMoveCard(value, lists, card);
   };
 
   useEffect(() => {

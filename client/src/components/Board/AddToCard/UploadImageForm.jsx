@@ -6,6 +6,7 @@ import { useRouteMatch } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { getBoardDetailReq } from "../../../redux/actions/boards";
 import { getDataCardReq } from "../../../redux/actions/cardTask";
+import { PlusOutlined } from "@ant-design/icons";
 
 UploadImageForm.propTypes = {
   card: PropTypes.shape({
@@ -15,31 +16,25 @@ UploadImageForm.propTypes = {
   handleDeleteGround: PropTypes.func,
 };
 
+function beforeUpload(file) {
+  const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+  if (!isJpgOrPng) {
+    message.error("You can only upload JPG/PNG file!");
+  }
+  return isJpgOrPng;
+}
+
 function UploadImageForm(props) {
-  const { card, handlePreviewImg, handleDeleteGround } = props;
-  const dispatch = useDispatch();
+  const { card, handleChange } = props;
   const match = useRouteMatch();
 
-  const handleChange = (info) => {
+  const onChange = (info) => {
     let boardId = match.params.id;
     let cardId = card._id;
     if (info.file.status === "uploading") {
       return;
     } else {
-      uploadImage(cardId, boardId, info.file.originFileObj)
-        .then((res) => {
-          if (res.status === 200) {
-            message.success("Cập nhật ảnh bìa thành công");
-            dispatch(getBoardDetailReq(boardId));
-            dispatch(getDataCardReq(boardId, cardId));
-          } else message.error("Cập nhật ảnh bìa thất bại");
-        })
-        .catch((err) => {
-          message.error("Cập nhật ảnh bìa thất bại");
-        });
-      if (info.file.status === "uploading") {
-        return;
-      }
+      handleChange(cardId, boardId, info.file.originFileObj);
     }
   };
 
@@ -49,46 +44,33 @@ function UploadImageForm(props) {
 
   const uploadButton = (
     <div>
-      <Button style={{ marginTop: 8, width: "20vw" }}>Tải lên ảnh bìa</Button>
+      <PlusOutlined />
+      <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
   return (
-    <div style={{ overflow: "auto" }}>
-      <Card
-        size="small"
-        title={<div style={{ textAlign: "center" }}>Ảnh bìa</div>}
-        bordered={false}
-        bodyStyle={{ padding: "0", width: "20vw", height: "30vh" }}
-        headStyle={{ padding: "0" }}
-      >
-        <div id="scroll-upload" style={{ marginBottom: "2vh" }}>
-          <Upload
-            style={{ width: "10vw" }}
-            customRequest={dummyRequest}
-            name="avatar"
-            listType="picture"
-            className="avatar-uploader"
-            onChange={handleChange}
-            onPreview={(infor) => {
-              handlePreviewImg(infor, card);
-            }}
-          >
-            {uploadButton}
-          </Upload>
-        </div>
-        <Button
-          type="primary"
-          danger
-          onClick={() => {
-            handleDeleteGround(card);
-          }}
-          style={{ width: "20vw" }}
-          disabled={card.groundImage === "" ? true : false}
+    <Card
+      size="small"
+      title={<div style={{ textAlign: "center" }}>Ảnh bìa</div>}
+      bordered={false}
+      style={{ boxShadow: "0 0 2px 2px rgba(0,0,0,0.2)" }}
+      bodyStyle={{ textAlign: "center" }}
+      headStyle={{ padding: "0" }}
+    >
+      <div id="scroll-upload" style={{ marginBottom: "2vh" }}>
+        <Upload
+          customRequest={dummyRequest}
+          name="avatar"
+          listType="picture-card"
+          className="avatar-uploader"
+          onChange={onChange}
+          beforeUpload={beforeUpload}
+          showUploadList={false}
         >
-          Xóa ảnh bìa
-        </Button>
-      </Card>
-    </div>
+          {uploadButton}
+        </Upload>
+      </div>
+    </Card>
   );
 }
 

@@ -23,7 +23,6 @@ function FormEditComment(props) {
   return (
     <Form
       form={formEdit}
-      name="basic"
       onKeyPress={(event) => {
         if (event.key === "Enter") {
           handleClick();

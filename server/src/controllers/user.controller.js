@@ -12,7 +12,7 @@ exports.userBoard = async (req, res) => {
       id: user._id,
       username: user.username,
       fullname: user.fullname,
-      alias: user.username.substring(0, 2).toUpperCase(),
+      alias: user.fullname.substring(0, 2).toUpperCase(),
       email: user.email,
     },
   });

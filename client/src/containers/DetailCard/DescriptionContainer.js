@@ -9,6 +9,7 @@ import { useRouteMatch } from "react-router-dom";
 import { getBoardDetailReq } from "../../redux/actions/boards";
 import { addDescriptionRequest } from "../../redux/actions/board";
 import { getDataCardReq } from "../../redux/actions/cardTask";
+import { createAction } from "../../api/action";
 
 DescriptionContainer.propTypes = {
   card: PropTypes.shape({
@@ -54,14 +55,40 @@ function DescriptionContainer(props) {
       updateCardTask(dataReq)
         .then((res) => {
           if (res.status === 200) {
-            message.success("Thêm mô tả cho thẻ thành công");
+            message.success(
+              `${
+                card.description.length > 0 ? "Cập nhật" : "Thêm"
+              } mô tả cho thẻ thành công`
+            );
+            createAction({
+              boardId,
+              cardId,
+              data: {
+                action: `${
+                  card.description.length > 0 ? "cập nhật" : "thêm"
+                } mô tả`,
+              },
+            }).then((res) => {
+              if (res.status === 200) {
+                dispatch(getBoardDetailReq(boardId));
+              }
+            });
             dispatch(getBoardDetailReq(boardId));
             dispatch(getDataCardReq(boardId, cardId));
             dispatch(addDescriptionRequest(cardId, value.description));
-          } else message.error("Thêm mô tả cho thẻ thất bại");
+          } else
+            message.error(
+              `${
+                card.description.length > 0 ? "Cập nhật" : "Thêm"
+              } mô tả cho thẻ thất bại`
+            );
         })
         .catch((err) => {
-          message.error("Thêm mô tả cho thẻ thất bại");
+          message.error(
+            `${
+              card.description.length > 0 ? "Cập nhật" : "Thêm"
+            } mô tả cho thẻ thất bại`
+          );
         });
     });
     setOpenForm(false);

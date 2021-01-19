@@ -32,7 +32,6 @@ function FormEditList(props) {
     >
       <Form
         form={form}
-        name="basic"
         onKeyPress={(event) => {
           if (event.key === "Enter") {
             handleClick();

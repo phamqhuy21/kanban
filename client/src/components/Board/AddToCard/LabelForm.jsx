@@ -3,6 +3,7 @@ import { Form, Input, Card, Row, Col, Button } from "antd";
 import { CheckOutlined, EditOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import { findIndex, indexOf } from "lodash";
+import Scrollbar from "../../Scrollbar/Scrollbar";
 
 LabelForm.propTypes = {
   card: PropTypes.shape({
@@ -70,10 +71,9 @@ function LabelForm(props) {
           <div>
             <p style={{ fontWeight: "500" }}>Nhãn</p>
             {stateLabel ? (
-              <div
-                style={{
-                  overflow: "auto",
-                  maxHeight: "70vh",
+              <Scrollbar
+                styleScrollbar={{
+                  maxHeight: "100vh",
                   paddingRight: "10px",
                 }}
               >
@@ -120,7 +120,7 @@ function LabelForm(props) {
                     </Row>
                   );
                 })}
-              </div>
+              </Scrollbar>
             ) : null}
           </div>
         </Form.Item>

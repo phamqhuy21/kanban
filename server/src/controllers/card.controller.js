@@ -1,3 +1,4 @@
+const { action } = require("../models");
 const db = require("../models");
 const Action = require("../models/action.model");
 const List = db.list;
@@ -159,7 +160,12 @@ exports.getDetailCard = async (req, res) => {
       }
       for (let i = 0; i < card.comments.length; i++) {
         let dataComment = await Comment.findById(card.comments[i]).lean();
-        comments.push(dataComment);
+        let userComment = await User.findById(dataComment.createdById).lean();
+        userComment = {
+          ...userComment,
+          alias: userComment.fullname.substring(0, 2).toUpperCase(),
+        };
+        comments.push({ ...dataComment, createdById: userComment });
       }
       for (let i = 0; i < card.labels.length; i++) {
         let dataLabel = await Label.findById(card.labels[i]).lean();
@@ -168,8 +174,13 @@ exports.getDetailCard = async (req, res) => {
       for (let i = 0; i < card.actions.length; i++) {
         let dataAction = await Action.findById(card.actions[i]).lean();
         let userAction = await User.findById(dataAction.createdById).lean();
+        userAction = {
+          ...userAction,
+          alias: userAction.fullname.substring(0, 2).toUpperCase(),
+        };
         actions.push({ ...dataAction, createdById: userAction });
       }
+      actions.reverse();
       if (card.background.length > 0) {
         background = await File.findById(card.background).lean();
       }

@@ -27,7 +27,7 @@ function CardContainer(props) {
   const onEditCard = () => setVisibleFormEditCard(true);
 
   const handleSave = (cardId, title) => {
-    handleEditCard(cardId, title);
+    handleEditCard(card, title);
   };
 
   const handleOpenDetailCard = (card) => {

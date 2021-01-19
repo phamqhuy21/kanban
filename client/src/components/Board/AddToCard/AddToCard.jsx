@@ -13,6 +13,8 @@ import UploadFileForm from "./UploadFileForm";
 import ManageLabel from "../../../containers/DetailCard/ManageLabel";
 import MemberFormContainer from "../../../containers/AddToCard/MemberFormContainer";
 import DeadlineFormContainer from "../../../containers/AddToCard/DeadlineFormContainer";
+import UploadFileContainer from "../../../containers/AddToCard/UploadFileContainer";
+import UploadBackgroundContainer from "../../../containers/AddToCard/UploadBackgroundContainer";
 
 AddToCard.propTypes = {
   card: PropTypes.object,
@@ -35,14 +37,7 @@ const style = {
 };
 
 function AddToCard(props) {
-  const {
-    card,
-    selectLabel,
-    handleDeleteExDate,
-    handlePreviewFile,
-    handlePreviewImg,
-    handleDeleteGround,
-  } = props;
+  const { card } = props;
 
   return (
     <div>
@@ -51,44 +46,15 @@ function AddToCard(props) {
         <MemberFormContainer />
         <ManageLabel />
         <Dropdown
-          overlay={
-            <DeadlineFormContainer
-              card={card}
-              handleDeleteExDate={handleDeleteExDate}
-            />
-          }
+          overlay={<DeadlineFormContainer card={card} />}
           trigger="click"
         >
           <Button style={style.styleButton}>
             <FieldTimeOutlined /> Ngày hết hạn
           </Button>
         </Dropdown>
-        <Dropdown
-          overlay={
-            <UploadFileForm card={card} handlePreviewFile={handlePreviewFile} />
-          }
-          trigger="click"
-        >
-          <Button style={style.styleButton}>
-            <PaperClipOutlined />
-            Đính kèm
-          </Button>
-        </Dropdown>
-        <Dropdown
-          overlay={
-            <UploadImageForm
-              card={card}
-              handlePreviewImg={handlePreviewImg}
-              handleDeleteGround={handleDeleteGround}
-            />
-          }
-          trigger="click"
-        >
-          <Button style={style.styleButton}>
-            <PictureOutlined />
-            Ảnh bìa
-          </Button>
-        </Dropdown>
+        <UploadFileContainer />
+        <UploadBackgroundContainer />
       </div>
     </div>
   );

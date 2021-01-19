@@ -89,7 +89,7 @@ function DeadlineForm(props) {
       setDate(moment(now).format(dateFormat));
       setTime(moment(now).format(timeFormat));
     }
-    setTimer(card.timer || 0);
+    setTimer(card.timer || -1);
   }, [card.deadline, card.timer]);
 
   return (

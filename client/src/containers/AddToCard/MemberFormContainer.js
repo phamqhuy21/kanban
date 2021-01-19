@@ -89,15 +89,6 @@ function MemberFormContainer(props) {
       .catch((err) => {
         message.error("Cập nhật thành viên thẻ thất bại");
       });
-    // if (
-    //   findIndex(card.members, function (member) {
-    //     return member.alias === mem.alias;
-    //   }) !== -1
-    // ) {
-    //   dispatch(deleteMemberRequest(card.id, mem));
-    // } else {
-    //   dispatch(addMemberRequest(card.id, mem));
-    // }
   };
 
   return (
