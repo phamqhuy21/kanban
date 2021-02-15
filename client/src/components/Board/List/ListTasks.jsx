@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { List, Card, Popover } from "antd";
+import { List, Card, Popover, notification } from "antd";
 import { PlusOutlined, EllipsisOutlined } from "@ant-design/icons";
 import { Droppable } from "react-beautiful-dnd";
 import FormAddCard from "../Card/FormAddCard";
@@ -81,6 +81,17 @@ function ListTasks(props) {
     setOpenForm,
   } = props;
 
+  const handleOpenFormCard = (list) => {
+    if (list.cards.length >= 20) {
+      notification.open({
+        message: "Số thẻ vượt quá giới hạn",
+        description: "Số thẻ trong một danh sách không được vượt quá 20.",
+      });
+    } else {
+      openFormCard();
+    }
+  };
+
   return (
     <div
       {...provided.draggableProps}
@@ -131,7 +142,12 @@ function ListTasks(props) {
               <Card
                 style={{ backgroundColor: "transparent", opacity: "0.5" }}
                 title={
-                  <div onClick={openFormCard} style={{ cursor: "pointer" }}>
+                  <div
+                    onClick={() => {
+                      handleOpenFormCard(list);
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
                     <PlusOutlined />
                     <span> Thêm thẻ khác</span>
                   </div>

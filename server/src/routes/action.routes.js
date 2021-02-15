@@ -15,4 +15,6 @@ module.exports = (app) => {
     [authJwt.verifyToken, authJwt.isMemberBoard],
     controller.createAction
   );
+
+  app.get("/api/v1/action", [authJwt.verifyToken], controller.getActionUser);
 };

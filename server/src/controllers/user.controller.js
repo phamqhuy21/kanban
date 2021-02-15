@@ -18,6 +18,27 @@ exports.userBoard = async (req, res) => {
   });
 };
 
+exports.updateUser = async (req, res) => {
+  try {
+    let { userId } = req;
+    let { username, email, fullname } = req.body;
+    let user = await User.findByIdAndUpdate(userId, req.body, {
+      new: true,
+      useFindAndModify: false,
+    });
+    if (user) {
+      return res.status(200).json({
+        message: "update user success",
+        data: user,
+      });
+    }
+  } catch (err) {
+    return res.status(500).json({
+      message: err,
+    });
+  }
+};
+
 exports.adminBoard = (req, res) => {
   res.status(200).send("Admin Content.");
 };

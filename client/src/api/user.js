@@ -43,3 +43,18 @@ export const getUser = () => {
   };
   return callApi(config);
 };
+
+export const updateUser = (data) => {
+  const accessToken = localStorage.getItem("accessToken");
+  let header = {
+    "x-access-token": accessToken,
+    "Content-Type": "application/json",
+  };
+  let config = {
+    method: "post",
+    url: `${BASE_URL}/${PATH}/user`,
+    headers: header,
+    data,
+  };
+  return callApi(config);
+};

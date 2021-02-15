@@ -5,6 +5,7 @@ const Action = mongoose.model(
   new mongoose.Schema(
     {
       createdById: String,
+      board: String,
       card: String,
       action: String,
     },

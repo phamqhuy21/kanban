@@ -30,6 +30,7 @@ CardTask.propTypes = {
 function CardTask(props) {
   const {
     card,
+    user,
     index,
     refCard,
     onDeleteCard,
@@ -47,6 +48,8 @@ function CardTask(props) {
       transitionDuration: `0.001s`,
     };
   }
+
+  console.log(user);
 
   return (
     <React.Fragment>
@@ -76,7 +79,11 @@ function CardTask(props) {
                   }}
                   style={{
                     margin: "0.5rem 0",
-                    backgroundColor: "white",
+                    backgroundColor:
+                      card.members.filter((member) => member._id === user.id)
+                        .length > 0
+                        ? "#d7ccc8"
+                        : "#fff",
                     borderRadius: "0.2rem",
                     boxShadow: "0 1px 0 rgba(9,30,66,.25)",
                     color: "#616161",

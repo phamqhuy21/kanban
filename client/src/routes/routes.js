@@ -3,6 +3,7 @@ import KanBan from "../containers/KanBan";
 import SignInSignUpContainer from "../containers/SignInSignUp/SignInSignUpContainer";
 import ManageBoardContainer from "../containers/ManageBoards/ManageBoardContainer";
 import NotFound from "../components/NotFound/NotFound";
+import UserContainer from "../containers/User/UserContainer";
 
 const routes = [
   {
@@ -24,6 +25,16 @@ const routes = [
     path: "/signUp",
     exact: true,
     component: () => <SignInSignUpContainer />,
+  },
+  {
+    path: "/user/:username/information",
+    exact: true,
+    component: () => <UserContainer />,
+  },
+  {
+    path: "/user/:username/activity",
+    exact: true,
+    component: () => <UserContainer />,
   },
   { path: "*", component: () => <NotFound /> },
 ];

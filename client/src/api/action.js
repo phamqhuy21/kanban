@@ -22,3 +22,17 @@ export const createAction = (data) => {
   };
   return callApi(config);
 };
+
+export const getActionUser = () => {
+  const accessToken = localStorage.getItem("accessToken");
+  const header = {
+    "x-access-token": accessToken,
+    "Content-Type": "application/json",
+  };
+  let config = {
+    method: "get",
+    url: `${BASE_URL}/${PATH}/action`,
+    headers: header,
+  };
+  return callApi(config);
+};

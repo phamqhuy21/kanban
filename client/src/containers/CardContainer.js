@@ -4,6 +4,7 @@ import CardTask from "../components/Board/Card/CardTask";
 import FormEditCard from "../components/Board/Card/FormEditCard";
 import { Modal } from "antd";
 import DetailcardContainer from "./DetailcardContainer";
+import { useSelector } from "react-redux";
 
 CardContainer.propTypes = {
   card: PropTypes.object,
@@ -17,6 +18,8 @@ function CardContainer(props) {
   const [visibleFormEditCard, setVisibleFormEditCard] = useState(false);
   const [cardSelected, setCardSelected] = useState();
   const [visibleModalCard, setVisibleModalCard] = useState(false);
+
+  const usersReducer = useSelector((state) => state.usersReducer);
 
   const refCard = useRef(null);
 
@@ -40,6 +43,7 @@ function CardContainer(props) {
       <CardTask
         refCard={refCard}
         card={card}
+        user={usersReducer}
         index={index}
         handleSave={handleSave}
         onDeleteCard={onDeleteCard}

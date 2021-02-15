@@ -9,13 +9,13 @@ function ActionBoard(props) {
   const { action } = props;
 
   return (
-    <Row style={{ margin: "0 0 10px 0" }}>
-      <Col span={2} style={{ textAlign: "center" }}>
+    <Row style={{ margin: 0 }}>
+      <Col span={3} style={{ textAlign: "center" }}>
         <Avatar style={{ marginRight: "10px", marginTop: "5px" }}>
           {action.createdById.alias}
         </Avatar>
       </Col>
-      <Col span={21}>
+      <Col span={20}>
         <p style={{ marginBottom: "0" }}>
           <b>{action.createdById.fullname}</b> đã {action.action}{" "}
           {action.card ? (

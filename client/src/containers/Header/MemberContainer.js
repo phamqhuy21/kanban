@@ -65,9 +65,14 @@ function MemberContainer(props) {
           <Badge
             offset={[0, 5]}
             count={
-              detailBoardReducer.admin._id === usersReducer.id ? (
+              detailBoardReducer.admin._id === usersReducer.id &&
+              member._id !== usersReducer.id ? (
                 <CloseCircleOutlined
-                  style={{ cursor: "pointer", backgroundColor: "#f44336" }}
+                  style={{
+                    cursor: "pointer",
+                    backgroundColor: "#f44336",
+                    borderRadius: "50%",
+                  }}
                   onClick={() => {
                     handleDeleteMember(member);
                   }}
@@ -83,6 +88,8 @@ function MemberContainer(props) {
                   color: "#424242",
                   fontWeight: "500",
                   cursor: "context-menu",
+                  backgroundColor:
+                    member._id !== usersReducer.id ? "" : "#ffab91",
                 }}
               />
             </Popover>

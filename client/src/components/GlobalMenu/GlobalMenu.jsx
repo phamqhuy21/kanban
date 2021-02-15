@@ -42,18 +42,7 @@ function GlobalMenu(props) {
             </Dropdown>
           </div>
           <div className="right-menu">
-            <Dropdown
-              overlay={<ManageUserContainer />}
-              placement="bottomRight"
-              trigger="click"
-            >
-              <Button
-                shape="circle"
-                style={{ ...style.btnStyle, background: "hsla(0,0%,100%,.6)" }}
-              >
-                <b>{usersReducer.alias}</b>
-              </Button>
-            </Dropdown>
+            <ManageUserContainer />
           </div>
         </React.Fragment>
       ) : null}
